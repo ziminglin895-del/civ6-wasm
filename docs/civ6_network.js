@@ -145,6 +145,15 @@ class Civ6NetworkManager {
         const pct = Math.min(100, Math.round((me.tech_progress / me.tech_cost) * 100));
         techProgressEl.style.width = `${pct}%`;
       }
+
+      const civicEl = document.getElementById("current-civic-name");
+      if (civicEl) civicEl.innerText = me.current_civic || "法典 (Code of Laws)";
+
+      const civicProgressEl = document.getElementById("civic-progress-bar");
+      if (civicProgressEl && me.civic_cost) {
+        const pct = Math.min(100, Math.round(((me.civic_progress || 0) / me.civic_cost) * 100));
+        civicProgressEl.style.width = `${pct}%`;
+      }
     }
 
     // Update readiness pill
@@ -388,7 +397,86 @@ class Civ6NetworkManager {
       });
     }
 
-    // 8. Diplomacy Modal Controls
+    // 8. Civic Tree Modal Controls (51 Civics)
+    const civicModal = document.getElementById("civic-modal");
+    const cardActiveCivic = document.getElementById("card-active-civic");
+    const closeCivicBtn = document.getElementById("btn-close-civic");
+    const civicContainer = document.getElementById("civic-tree-container");
+
+    const renderCivicTree = () => {
+      if (!civicContainer) return;
+      const bundle = window.CIV6_BOOT_BUNDLE;
+      if (!bundle || !bundle.civics) return;
+
+      const me = this.engine.gameState ? this.engine.gameState.players.find(p => p.id === this.engine.myPlayerId) : null;
+      const currentCivic = me ? me.current_civic : "法典 (Code of Laws)";
+      const completedCivics = (me && me.completed_civics) || [];
+
+      civicContainer.innerHTML = bundle.civics.map(c => {
+        const isCurrent = currentCivic && (currentCivic.includes(c.name) || currentCivic.includes(c.zh_name));
+        const isDone = completedCivics.some(done => done.includes(c.name) || done.includes(c.zh_name));
+        return `
+          <div class="tech-item-card ${isDone ? 'completed' : ''}" data-civic="${c.zh_name || c.name} (${c.id})">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <b style="color: ${isCurrent ? '#a569bd' : (isDone ? '#2ecc71' : '#dfbe74')}; font-size:12px;">${c.zh_name || c.name}</b>
+              <span style="font-size:10px; color:#8899ac;">${c.era}</span>
+            </div>
+            <div style="font-size:11px; color:#cbd5e1;">📜 市政消耗: ${c.cost} 文化值</div>
+            <div style="font-size:10px; color:${isDone ? '#2ecc71' : (isCurrent ? '#a569bd' : '#8899ac')}; margin-top:4px;">
+              ${isDone ? '✔ 已掌握' : (isCurrent ? '⚡ 正在推行中...' : '点击选定推行')}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      civicContainer.querySelectorAll(".tech-item-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const civicName = card.getAttribute("data-civic");
+          if (me) {
+            me.current_civic = civicName;
+            me.civic_progress = 0;
+            const found = bundle.civics.find(item => civicName.includes(item.name) || civicName.includes(item.zh_name));
+            me.civic_cost = found ? found.cost : 40;
+            this.updateHUD(this.engine.gameState);
+            this.appendChat("system", `📜 帝国已调整社会市政推行方向：【${civicName}】！`);
+            renderCivicTree();
+          }
+        });
+      });
+    };
+
+    if (cardActiveCivic && civicModal) {
+      cardActiveCivic.addEventListener("click", () => {
+        renderCivicTree();
+        civicModal.style.display = "flex";
+      });
+    }
+
+    if (closeCivicBtn && civicModal) {
+      closeCivicBtn.addEventListener("click", () => {
+        civicModal.style.display = "none";
+      });
+    }
+
+    // 9. Breakthrough Modal Controls
+    const closeBreakBtn = document.getElementById("btn-close-breakthrough");
+    const breakModal = document.getElementById("breakthrough-modal");
+    if (closeBreakBtn && breakModal) {
+      closeBreakBtn.addEventListener("click", () => {
+        breakModal.style.display = "none";
+      });
+    }
+
+    // 10. Yields Toggle Button
+    const yieldsBtn = document.getElementById("btn-toggle-yields");
+    if (yieldsBtn) {
+      yieldsBtn.addEventListener("click", () => {
+        this.engine.showYields = !this.engine.showYields;
+        yieldsBtn.innerHTML = this.engine.showYields ? `<span>🌾</span> 产出已开启` : `<span>🌾</span> 产出已隐藏`;
+      });
+    }
+
+    // 11. Diplomacy Modal Controls
     const diploModal = document.getElementById("diplo-modal");
     const diploPortrait = document.getElementById("diplo-portrait");
     const diploTitle = document.getElementById("diplo-leader-title");

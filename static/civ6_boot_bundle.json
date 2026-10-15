@@ -1,729 +1,1087 @@
 {
   "version": "1.0.0-wasm",
-  "source": "Sid Meier's Civilization VI Official GameData",
+  "source": "Sid Meier's Civilization VI Official GameData & Localization",
   "timestamp": "2026-10-15",
   "technologies": [
     {
       "id": "TECH_POTTERY",
-      "name": "Pottery",
+      "name": "陶艺 (Pottery)",
+      "zh_name": "陶艺",
+      "en_name": "Pottery",
       "cost": 25,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "从来没有人弄湿黏土后就不管了，就像粘土可以变成砖块以此发家致富。 ——普鲁塔克"
     },
     {
       "id": "TECH_ANIMAL_HUSBANDRY",
-      "name": "Animal Husbandry",
+      "name": "畜牧业 (Animal Husbandry)",
+      "zh_name": "畜牧业",
+      "en_name": "Animal Husbandry",
       "cost": 25,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "如果天堂里没有狗，那么我死后，我想到狗去的地方去。  ——威尔·罗杰斯"
     },
     {
       "id": "TECH_MINING",
-      "name": "Mining",
+      "name": "采矿 (Mining)",
+      "zh_name": "采矿",
+      "en_name": "Mining",
       "cost": 25,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "有谁能比矿工妻子更值得 信任？ ——莫尔·特拉维斯"
     },
     {
       "id": "TECH_SAILING",
-      "name": "Sailing",
+      "name": "航海术 (Sailing)",
+      "zh_name": "航海术",
+      "en_name": "Sailing",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "大船可以多冒险，而小船则不能离岸太远。 ——本杰明·富兰克林"
     },
     {
       "id": "TECH_ASTROLOGY",
-      "name": "Astrology",
+      "name": "占星术 (Astrology)",
+      "zh_name": "占星术",
+      "en_name": "Astrology",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "我不相信星座。我是射手座，天生多疑。 ——亚瑟·查理斯·克拉克"
     },
     {
       "id": "TECH_IRRIGATION",
-      "name": "Irrigation",
+      "name": "灌溉 (Irrigation)",
+      "zh_name": "灌溉",
+      "en_name": "Irrigation",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "没有爱可以活下去，但没有水，没人能生存下来。 ——威斯坦·休·奥登"
     },
     {
       "id": "TECH_ARCHERY",
-      "name": "Archery",
+      "name": "箭术 (Archery)",
+      "zh_name": "箭术",
+      "en_name": "Archery",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "我朝天空射箭。不知箭落何方。 ——亨利·沃兹沃思·朗费罗"
     },
     {
       "id": "TECH_WRITING",
-      "name": "Writing",
+      "name": "写作 (Writing)",
+      "zh_name": "写作",
+      "en_name": "Writing",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "写作意味着分享。分享是人类社会的一部分——思想、想法、意见。 ——保罗·科埃略"
     },
     {
       "id": "TECH_MASONRY",
-      "name": "Masonry",
+      "name": "砌砖 (Masonry)",
+      "zh_name": "砌砖",
+      "en_name": "Masonry",
       "cost": 80,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "我们每个人都能雕刻石头、建造圆柱、或切割一块彩色玻璃来建造比我们本身大得多的东西。 ——伍冰枝"
     },
     {
       "id": "TECH_BRONZE_WORKING",
-      "name": "Bronze Working",
+      "name": "炼铜术 (Bronze Working)",
+      "zh_name": "炼铜术",
+      "en_name": "Bronze Working",
       "cost": 80,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "青铜制品是一种形态反射，是滋润心灵的美酒。 ——埃斯库罗斯"
     },
     {
       "id": "TECH_THE_WHEEL",
-      "name": "The Wheel",
+      "name": "轮子 (The Wheel)",
+      "zh_name": "轮子",
+      "en_name": "The Wheel",
       "cost": 80,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "有时轮子旋转缓慢，但至少它在转动。 ——洛恩·迈克尔斯"
     },
     {
       "id": "TECH_CELESTIAL_NAVIGATION",
-      "name": "Celestial Navigation",
+      "name": "天文导航 (Celestial Navigation)",
+      "zh_name": "天文导航",
+      "en_name": "Celestial Navigation",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "我要的只是一艘高高的船，一颗星星为我导航。 ——约翰·梅斯菲尔德"
     },
     {
       "id": "TECH_CURRENCY",
-      "name": "Currency",
+      "name": "货币 (Currency)",
+      "zh_name": "货币",
+      "en_name": "Currency",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "财富不在于多得，而在于少欲。 ——爱比克泰德"
     },
     {
       "id": "TECH_HORSEBACK_RIDING",
-      "name": "Horseback Riding",
+      "name": "骑术 (Horseback Riding)",
+      "zh_name": "骑术",
+      "en_name": "Horseback Riding",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "没有浪费任何时间在马鞍上。 ——温斯顿·丘吉尔"
     },
     {
       "id": "TECH_IRON_WORKING",
-      "name": "Iron Working",
+      "name": "炼铁术 (Iron Working)",
+      "zh_name": "炼铁术",
+      "en_name": "Iron Working",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "上帝通过铁器创造了我们。然后他升高温度，将其中一些铸造成钢。 ——玛莉·奥斯蒙"
     },
     {
       "id": "TECH_SHIPBUILDING",
-      "name": "Shipbuilding",
+      "name": "造船术 (Shipbuilding)",
+      "zh_name": "造船术",
+      "en_name": "Shipbuilding",
       "cost": 200,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "我无法想象出人类是在什么情况下造出了船…现代造船已不止于此。 ——皇家邮轮泰坦尼克号船长爱德华·约翰·史密斯"
     },
     {
       "id": "TECH_MATHEMATICS",
-      "name": "Mathematics",
+      "name": "数学 (Mathematics)",
+      "zh_name": "数学",
+      "en_name": "Mathematics",
       "cost": 200,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "没有数学，你什么也做不了。你周围的一切都是数学。你周围的一切都是数字。 ——夏琨塔拉·戴维"
     },
     {
       "id": "TECH_CONSTRUCTION",
-      "name": "Construction",
+      "name": "建造 (Construction)",
+      "zh_name": "建造",
+      "en_name": "Construction",
       "cost": 200,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "用心创作；用知识建造。 ——克里斯·杰米"
     },
     {
       "id": "TECH_ENGINEERING",
-      "name": "Engineering",
+      "name": "工程学 (Engineering)",
+      "zh_name": "工程学",
+      "en_name": "Engineering",
       "cost": 200,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "萝卜青菜各有所爱。 ——罗伯特·海因莱因"
     },
     {
       "id": "TECH_MILITARY_TACTICS",
-      "name": "Military Tactics",
+      "name": "战术学 (Military Tactics)",
+      "zh_name": "战术学",
+      "en_name": "Military Tactics",
       "cost": 300,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "战术意味着用你所拥有的东西做你所能做的事。 ——索尔·阿林斯基"
     },
     {
       "id": "TECH_APPRENTICESHIP",
-      "name": "Apprenticeship",
+      "name": "学徒制 (Apprenticeship)",
+      "zh_name": "学徒制",
+      "en_name": "Apprenticeship",
       "cost": 300,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "在工艺方面，我们都是学徒，从未出现过大师。 ——欧内斯特·海明威"
     },
     {
       "id": "TECH_MACHINERY",
-      "name": "Machinery",
+      "name": "机械 (Machinery)",
+      "zh_name": "机械",
+      "en_name": "Machinery",
       "cost": 300,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "我会想象世界就是一个机器。机器不会有多余零件。它们永远都是需要多少就有多少。 ——雨果·卡布里特"
     },
     {
       "id": "TECH_EDUCATION",
-      "name": "Education",
+      "name": "教育 (Education)",
+      "zh_name": "教育",
+      "en_name": "Education",
       "cost": 390,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "教育的目的是用充实的知识取代空虚的头脑。 ——迈尔康·福布斯"
     },
     {
       "id": "TECH_STIRRUPS",
-      "name": "Stirrups",
+      "name": "马镫 (Stirrups)",
+      "zh_name": "马镫",
+      "en_name": "Stirrups",
       "cost": 390,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "像马镫一样的简单发明很少，也没几个会像马镫那样对历史产生强大的推动作用。 ——林·怀特"
     },
     {
       "id": "TECH_MILITARY_ENGINEERING",
-      "name": "Military Engineering",
+      "name": "军事工程 (Military Engineering)",
+      "zh_name": "军事工程",
+      "en_name": "Military Engineering",
       "cost": 390,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "猛攻——修建——战争 ——美国第十六工兵旅的座右铭"
     },
     {
       "id": "TECH_CASTLES",
-      "name": "Castles",
+      "name": "城堡 (Castles)",
+      "zh_name": "城堡",
+      "en_name": "Castles",
       "cost": 390,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "前路有危险？我并不会避开它们。最危险的地方就是最安全的地方。 ——内莫·诺克斯"
     },
     {
       "id": "TECH_CARTOGRAPHY",
-      "name": "Cartography",
+      "name": "制图学 (Cartography)",
+      "zh_name": "制图学",
+      "en_name": "Cartography",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "流浪者不一定都迷失了方向。 ——约翰·罗纳德·瑞尔·托尔金"
     },
     {
       "id": "TECH_MASS_PRODUCTION",
-      "name": "Mass Production",
+      "name": "大规模生产 (Mass Production)",
+      "zh_name": "大规模生产",
+      "en_name": "Mass Production",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "人们可以选择任何颜色的T型车——只要它是黑的。 ——亨利·福特"
     },
     {
       "id": "TECH_BANKING",
-      "name": "Banking",
+      "name": "银行业 (Banking)",
+      "zh_name": "银行业",
+      "en_name": "Banking",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "如果你欠银行100美元，你会有麻烦。如果你欠银行1亿美元，有麻烦的是银行。 ——保罗·盖蒂"
     },
     {
       "id": "TECH_GUNPOWDER",
-      "name": "Gunpowder",
+      "name": "火药 (Gunpowder)",
+      "zh_name": "火药",
+      "en_name": "Gunpowder",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "火药的真正用途是让所有人都长高。 ——托马斯·卡莱尔"
     },
     {
       "id": "TECH_PRINTING",
-      "name": "Printing",
+      "name": "印刷术 (Printing)",
+      "zh_name": "印刷术",
+      "en_name": "Printing",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "笔没有剑重，但可能印刷机的威力比攻城器大。寥寥数语就能改变一切。 ——泰瑞·普莱契"
     },
     {
       "id": "TECH_SQUARE_RIGGING",
-      "name": "Square Rigging",
+      "name": "紧固风帆 (Square Rigging)",
+      "zh_name": "紧固风帆",
+      "en_name": "Square Rigging",
       "cost": 660,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "世界上某些地方人类无法靠近，但帆船却可以。 ——艾伦·维利耶"
     },
     {
       "id": "TECH_ASTRONOMY",
-      "name": "Astronomy",
+      "name": "天文学 (Astronomy)",
+      "zh_name": "天文学",
+      "en_name": "Astronomy",
       "cost": 660,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "天文学吸引人们仰望上苍，引导我们了解其他世界。 ——柏拉图"
     },
     {
       "id": "TECH_METAL_CASTING",
-      "name": "Metal Casting",
+      "name": "金属铸造 (Metal Casting)",
+      "zh_name": "金属铸造",
+      "en_name": "Metal Casting",
       "cost": 660,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "最先，火神赫菲斯托斯做了一个超级厉害的巨大盾牌…他在盾牌上锻造了两座宏伟城市。 ——荷马"
     },
     {
       "id": "TECH_SIEGE_TACTICS",
-      "name": "Siege Tactics",
+      "name": "攻城战术 (Siege Tactics)",
+      "zh_name": "攻城战术",
+      "en_name": "Siege Tactics",
       "cost": 660,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "故上兵伐谋，其次伐交， 其次伐兵，其下攻城。攻城之法为不得已。 ——孙子"
     },
     {
       "id": "TECH_INDUSTRIALIZATION",
-      "name": "Industrialization",
+      "name": "工业化 (Industrialization)",
+      "zh_name": "工业化",
+      "en_name": "Industrialization",
       "cost": 845,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "我认为工业革命初期，人类犯了一个错误，我们直接跨越到了机械化的东西。人们需要使用双手来感受创造力。 ——安德鲁·诺顿"
     },
     {
       "id": "TECH_SCIENTIFIC_THEORY",
-      "name": "Scientific Theory",
+      "name": "科学理论 (Scientific Theory)",
+      "zh_name": "科学理论",
+      "en_name": "Scientific Theory",
       "cost": 845,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "声称无法验证，并认定不会受这些毫无价值的反驳证据的影响，他们可能产生的价值鼓舞了我们，或让我们感到惊奇无比。 ——卡尔·萨根"
     },
     {
       "id": "TECH_BALLISTICS",
-      "name": "Ballistics",
+      "name": "弹道学 (Ballistics)",
+      "zh_name": "弹道学",
+      "en_name": "Ballistics",
       "cost": 845,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "有件事可用来推测发生了什么，但我们没有妄自揣测，直到弹道学证实了发生的一切… ——约翰·汉森"
     },
     {
       "id": "TECH_MILITARY_SCIENCE",
-      "name": "Military Science",
+      "name": "军事学 (Military Science)",
+      "zh_name": "军事学",
+      "en_name": "Military Science",
       "cost": 845,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "不管战略多美妙，偶尔看看结果如何很重要。 ——温斯顿·丘吉尔"
     },
     {
       "id": "TECH_STEAM_POWER",
-      "name": "Steam Power",
+      "name": "蒸汽动力 (Steam Power)",
+      "zh_name": "蒸汽动力",
+      "en_name": "Steam Power",
       "cost": 970,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "发明蒸汽机的科学进步是否让人类受益，这是一个有争议的问题。 ——温斯顿·丘吉尔"
     },
     {
       "id": "TECH_SANITATION",
-      "name": "Sanitation",
+      "name": "卫生学 (Sanitation)",
+      "zh_name": "卫生学",
+      "en_name": "Sanitation",
       "cost": 970,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "过去200年里，在挽救生命与改善健康状况方面，没有任何一项创新可以与此次由盖厕所而引发的卫生革命所产生的意义相提并论。 ——西尔维娅·伯韦尔"
     },
     {
       "id": "TECH_ECONOMICS",
-      "name": "Economics",
+      "name": "经济学 (Economics)",
+      "zh_name": "经济学",
+      "en_name": "Economics",
       "cost": 970,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "经济学这门学科不太尊重个人意愿。 ——尼基塔·赫鲁晓夫"
     },
     {
       "id": "TECH_RIFLING",
-      "name": "Rifling",
+      "name": "膛线 (Rifling)",
+      "zh_name": "膛线",
+      "en_name": "Rifling",
       "cost": 970,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "事实胜于雄辩。 ——克莱格·罗伯茨"
     },
     {
       "id": "TECH_FLIGHT",
-      "name": "Flight",
+      "name": "飞行 (Flight)",
+      "zh_name": "飞行",
+      "en_name": "Flight",
       "cost": 1140,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "一旦尝过飞行的滋味，便会永远仰望天空，因为你曾去过那里，并且渴望回到那里。 ——列奥纳多·达·芬奇"
     },
     {
       "id": "TECH_REPLACEABLE_PARTS",
-      "name": "Replaceable Parts",
+      "name": "可更换部件 (Replaceable Parts)",
+      "zh_name": "可更换部件",
+      "en_name": "Replaceable Parts",
       "cost": 1140,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "一台机器以平稳且可预见的方式运行，它的部件必须符合标准，这样才能更换。 ——查尔斯·艾森斯坦"
     },
     {
       "id": "TECH_STEEL",
-      "name": "Steel",
+      "name": "钢铁 (Steel)",
+      "zh_name": "钢铁",
+      "en_name": "Steel",
       "cost": 1140,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "最好的钢并不总是最亮的。 ——乔·艾伯康比"
     },
     {
       "id": "TECH_ELECTRICITY",
-      "name": "Electricity",
+      "name": "电力 (Electricity)",
+      "zh_name": "电力",
+      "en_name": "Electricity",
       "cost": 1250,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "如果没电，那我们就得借着烛光看电视。 ——乔治·戈布尔"
     },
     {
       "id": "TECH_RADIO",
-      "name": "Radio",
+      "name": "无线电 (Radio)",
+      "zh_name": "无线电",
+      "en_name": "Radio",
       "cost": 1250,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "没有无线电的世界是聋人世界。 ——欧内斯特·耶博阿"
     },
     {
       "id": "TECH_CHEMISTRY",
-      "name": "Chemistry",
+      "name": "化学 (Chemistry)",
+      "zh_name": "化学",
+      "en_name": "Chemistry",
       "cost": 1250,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "化学是物理当中令人讨厌的一部分。 ——彼得·瑞斯"
     },
     {
       "id": "TECH_COMBUSTION",
-      "name": "Combustion",
+      "name": "内燃机 (Combustion)",
+      "zh_name": "内燃机",
+      "en_name": "Combustion",
       "cost": 1250,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "当我们还是小孩儿时，汽车没那么先进。归根结底，汽车仍然只是一台汽油内燃机。 ——德纳·布鲁奈蒂"
     },
     {
       "id": "TECH_ADVANCED_FLIGHT",
-      "name": "Advanced Flight",
+      "name": "先进飞行 (Advanced Flight)",
+      "zh_name": "先进飞行",
+      "en_name": "Advanced Flight",
       "cost": 1410,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "飞机确实又快又实惠，不过一味追求效率，我们得失去多少快乐，牺牲多少休闲时光啊。 ——金吉·罗杰斯"
     },
     {
       "id": "TECH_ROCKETRY",
-      "name": "Rocketry",
+      "name": "火箭学 (Rocketry)",
+      "zh_name": "火箭学",
+      "en_name": "Rocketry",
       "cost": 1410,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "科学火箭神话被编成了神话，这和它真正的困难不相称。 ——约翰·卡马克"
     },
     {
       "id": "TECH_ADVANCED_BALLISTICS",
-      "name": "Advanced Ballistics",
+      "name": "先进弹道学 (Advanced Ballistics)",
+      "zh_name": "先进弹道学",
+      "en_name": "Advanced Ballistics",
       "cost": 1410,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "在理性的子弹面前，无知的勇气是没用的。 ——乔治·巴顿"
     },
     {
       "id": "TECH_COMBINED_ARMS",
-      "name": "Combined Arms",
+      "name": "协同作战 (Combined Arms)",
+      "zh_name": "协同作战",
+      "en_name": "Combined Arms",
       "cost": 1410,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "有意义的战斗胜过无意义的生活。 ——乔治·史密斯·巴顿"
     },
     {
       "id": "TECH_PLASTICS",
-      "name": "Plastics",
+      "name": "塑料 (Plastics)",
+      "zh_name": "塑料",
+      "en_name": "Plastics",
       "cost": 1410,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "在主要可塑性物质的层级结构里，塑料制品是一种不受待见的材料，它消失在橡胶的热情洋溢和金属的平坦坚硬之中。 ——罗兰·巴特"
     },
     {
       "id": "TECH_COMPUTERS",
-      "name": "Computers",
+      "name": "计算机 (Computers)",
+      "zh_name": "计算机",
+      "en_name": "Computers",
       "cost": 1580,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "人都会犯错，但是想真正把事情搞砸你还需要一台计算机。  ——保罗·埃利希"
     },
     {
       "id": "TECH_NUCLEAR_FISSION",
-      "name": "Nuclear Fission",
+      "name": "核裂变 (Nuclear Fission)",
+      "zh_name": "核裂变",
+      "en_name": "Nuclear Fission",
       "cost": 1580,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "如果你继续进行核军备竞赛，那你接下来要做的是把他们都炸成碎片。 ——温斯顿·丘吉尔"
     },
     {
       "id": "TECH_SYNTHETIC_MATERIALS",
-      "name": "Synthetic Materials",
+      "name": "合成材料 (Synthetic Materials)",
+      "zh_name": "合成材料",
+      "en_name": "Synthetic Materials",
       "cost": 1580,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "文化里充斥着太多的塑料，以致于含乙烯基的塑料美洲豹兽皮变成了濒临灭绝的合成物。 ——莉莉·汤姆林"
     },
     {
       "id": "TECH_TELECOMMUNICATIONS",
-      "name": "Telecommunications",
+      "name": "电信 (Telecommunications)",
+      "zh_name": "电信",
+      "en_name": "Telecommunications",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "沃森先生…过来一下…我想见你。 ——亚历山大·格雷厄姆·贝尔"
     },
     {
       "id": "TECH_SATELLITES",
-      "name": "Satellites",
+      "name": "人造卫星 (Satellites)",
+      "zh_name": "人造卫星",
+      "en_name": "Satellites",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "卫星没有意识。 ——爱德华·默罗"
     },
     {
       "id": "TECH_GUIDANCE_SYSTEMS",
-      "name": "Guidance Systems",
+      "name": "制导系统 (Guidance Systems)",
+      "zh_name": "制导系统",
+      "en_name": "Guidance Systems",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "生大材，不遇其时，其势定衰。生平庸，不化其势，其性定弱。 ——老子"
     },
     {
       "id": "TECH_LASERS",
-      "name": "Lasers",
+      "name": "激光 (Lasers)",
+      "zh_name": "激光",
+      "en_name": "Lasers",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "当上帝说让光芒普照大地时，他的意思肯定是指完美的相干光线。 ——查尔斯·汤斯"
     },
     {
       "id": "TECH_COMPOSITES",
-      "name": "Composites",
+      "name": "复合材料 (Composites)",
+      "zh_name": "复合材料",
+      "en_name": "Composites",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "所有物质事物看起来都是由硬粒子和固相颗粒组成…在很多方面，都和智能主体决策创造的第一个产物联系在一起。 ——艾萨克·牛顿"
     },
     {
       "id": "TECH_STEALTH_TECHNOLOGY",
-      "name": "Stealth Technology",
+      "name": "隐形技术 (Stealth Technology)",
+      "zh_name": "隐形技术",
+      "en_name": "Stealth Technology",
       "cost": 1850,
-      "era": "Information"
+      "era": "Information",
+      "quote": "我想说的是隐形是一种有趣的能力，你可以穿过世界看看它到底是什么样子，而没人能看到你。 ——凯文·贝肯"
     },
     {
       "id": "TECH_ROBOTICS",
-      "name": "Robotics",
+      "name": "机器人技术 (Robotics)",
+      "zh_name": "机器人技术",
+      "en_name": "Robotics",
       "cost": 2155,
-      "era": "Information"
+      "era": "Information",
+      "quote": "机器人技术永远存在，它永远都是下一件大事，这项技术如此让人兴奋，如此扣人心弦，以至于很容易得意忘形。 ——科林·安格尔"
     },
     {
       "id": "TECH_NANOTECHNOLOGY",
-      "name": "Nanotechnology",
+      "name": "纳米技术 (Nanotechnology)",
+      "zh_name": "纳米技术",
+      "en_name": "Nanotechnology",
       "cost": 2155,
-      "era": "Information"
+      "era": "Information",
+      "quote": "如果科技能推动变革，那么纳米科技是人类未来的推动力。 ——娜塔莎·维塔莫尔"
     },
     {
       "id": "TECH_NUCLEAR_FUSION",
-      "name": "Nuclear Fusion",
+      "name": "核聚变 (Nuclear Fusion)",
+      "zh_name": "核聚变",
+      "en_name": "Nuclear Fusion",
       "cost": 2155,
-      "era": "Information"
+      "era": "Information",
+      "quote": "我支持从15亿千米远的地方来控制核聚变能量。通过太阳进行的核聚变非常不错，而且是免费的。地球上的反应堆…没有那么多。 ——乔·罗姆"
     },
     {
       "id": "TECH_FUTURE_TECH",
-      "name": "Future Tech",
+      "name": "未来科技 (Future Tech)",
+      "zh_name": "未来科技",
+      "en_name": "Future Tech",
       "cost": 2500,
-      "era": "Information"
+      "era": "Information",
+      "quote": "没有什么比梦想更能创造未来。 ——维克多·雨果"
     }
   ],
   "civics": [
     {
       "id": "CIVIC_CODE_OF_LAWS",
-      "name": "Code Of Laws",
+      "name": "法典 (Code Of Laws)",
+      "zh_name": "法典",
+      "en_name": "Code Of Laws",
       "cost": 20,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "不是智慧，而是权力制定了法律。 ——托马斯·霍布斯"
     },
     {
       "id": "CIVIC_CRAFTSMANSHIP",
-      "name": "Craftsmanship",
+      "name": "技艺 (Craftsmanship)",
+      "zh_name": "技艺",
+      "en_name": "Craftsmanship",
       "cost": 40,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "没有技艺，灵感不过是风中摇曳的芦苇。 ——约翰内斯·勃拉姆斯"
     },
     {
       "id": "CIVIC_FOREIGN_TRADE",
-      "name": "Foreign Trade",
+      "name": "对外贸易 (Foreign Trade)",
+      "zh_name": "对外贸易",
+      "en_name": "Foreign Trade",
       "cost": 40,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "每个国家都以交换为生。 ——亚当·斯密"
     },
     {
       "id": "CIVIC_MILITARY_TRADITION",
-      "name": "Military Tradition",
+      "name": "军事传统 (Military Tradition)",
+      "zh_name": "军事传统",
+      "en_name": "Military Tradition",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "所谓勇者，是把恐惧埋在自己心底。 ——上校大卫·哈克沃斯"
     },
     {
       "id": "CIVIC_STATE_WORKFORCE",
-      "name": "State Workforce",
+      "name": "国家劳动力 (State Workforce)",
+      "zh_name": "国家劳动力",
+      "en_name": "State Workforce",
       "cost": 70,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "强大的经济始于强壮的、受过良好教育的劳动力。 ——比尔·欧文斯"
     },
     {
       "id": "CIVIC_EARLY_EMPIRE",
-      "name": "Early Empire",
+      "name": "早期帝国 (Early Empire)",
+      "zh_name": "早期帝国",
+      "en_name": "Early Empire",
       "cost": 70,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "回顾过去，随着不断变换的帝国起起伏伏，你也能预见未来。 ——马可·奥里利乌斯"
     },
     {
       "id": "CIVIC_MYSTICISM",
-      "name": "Mysticism",
+      "name": "神秘主义 (Mysticism)",
+      "zh_name": "神秘主义",
+      "en_name": "Mysticism",
       "cost": 50,
-      "era": "Ancient"
+      "era": "Ancient",
+      "quote": "神秘主义是宇宙一体论的偶然错误和个别性象征。 ——拉尔夫·瓦尔多·爱默生"
     },
     {
       "id": "CIVIC_GAMES_RECREATION",
-      "name": "Games Recreation",
+      "name": "游戏与娱乐 (Games Recreation)",
+      "zh_name": "游戏与娱乐",
+      "en_name": "Games Recreation",
       "cost": 110,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "在满足了物质需求后，人们会注重精神需求。 ——爱德华·贝拉米"
     },
     {
       "id": "CIVIC_POLITICAL_PHILOSOPHY",
-      "name": "Political Philosophy",
+      "name": "政治哲学 (Political Philosophy)",
+      "zh_name": "政治哲学",
+      "en_name": "Political Philosophy",
       "cost": 110,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "政治是可能性艺术，可成为下一个最好的艺术。 ——奥托·冯·俾斯麦"
     },
     {
       "id": "CIVIC_DRAMA_POETRY",
-      "name": "Drama Poetry",
+      "name": "戏剧与诗歌 (Drama Poetry)",
+      "zh_name": "戏剧与诗歌",
+      "en_name": "Drama Poetry",
       "cost": 110,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "在关于小人的话题上，诗人们神秘地保持沉默。 ——切斯特顿"
     },
     {
       "id": "CIVIC_MILITARY_TRAINING",
-      "name": "Military Training",
+      "name": "军事训练 (Military Training)",
+      "zh_name": "军事训练",
+      "en_name": "Military Training",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "如果杀人是天性，那为何人们需要学习如何杀人呢？ ——琼·贝兹"
     },
     {
       "id": "CIVIC_DEFENSIVE_TACTICS",
-      "name": "Defensive Tactics",
+      "name": "防御战术 (Defensive Tactics)",
+      "zh_name": "防御战术",
+      "en_name": "Defensive Tactics",
       "cost": 175,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "无坚不摧在于防御；而进攻才有获胜的可能。 ——孙子"
     },
     {
       "id": "CIVIC_RECORDED_HISTORY",
-      "name": "Recorded History",
+      "name": "历史记录 (Recorded History)",
+      "zh_name": "历史记录",
+      "en_name": "Recorded History",
       "cost": 175,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "我经历过一些可怕的事，有些的确发生过。 ——马克·吐温"
     },
     {
       "id": "CIVIC_THEOLOGY",
-      "name": "Theology",
+      "name": "神学 (Theology)",
+      "zh_name": "神学",
+      "en_name": "Theology",
       "cost": 120,
-      "era": "Classical"
+      "era": "Classical",
+      "quote": "没有神学理论体系的宗教思维不比没有数学运算的测定法和天文学，或没有化学应用的炼铁更高深。 ——约翰·霍尔"
     },
     {
       "id": "CIVIC_NAVAL_TRADITION",
-      "name": "Naval Tradition",
+      "name": "海军传统 (Naval Tradition)",
+      "zh_name": "海军传统",
+      "en_name": "Naval Tradition",
       "cost": 200,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "对战争来讲，好的海军部队不是一种挑衅。它是和平的可靠保证。 ——西奥多·罗斯福"
     },
     {
       "id": "CIVIC_FEUDALISM",
-      "name": "Feudalism",
+      "name": "封建主义 (Feudalism)",
+      "zh_name": "封建主义",
+      "en_name": "Feudalism",
       "cost": 275,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "在民主国家，你的投票很重要。在封建国家，你的地位很重要。 ——莫根斯·加尔贝格"
     },
     {
       "id": "CIVIC_CIVIL_SERVICE",
-      "name": "Civil Service",
+      "name": "公共行政 (Civil Service)",
+      "zh_name": "公共行政",
+      "en_name": "Civil Service",
       "cost": 275,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "全是一些文件和表单，整个行政部门就像是用文件、表格和繁文缛节构成的堡垒。 ——亚历山大·奥斯妥夫斯基"
     },
     {
       "id": "CIVIC_MERCENARIES",
-      "name": "Mercenaries",
+      "name": "雇佣兵 (Mercenaries)",
+      "zh_name": "雇佣兵",
+      "en_name": "Mercenaries",
       "cost": 290,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "和平时期，老百姓受到雇佣兵 掠夺；战争时期，受到敌人掠夺。 ——尼可罗·马基亚维利"
     },
     {
       "id": "CIVIC_MEDIEVAL_FAIRES",
-      "name": "Medieval Faires",
+      "name": "中世纪集市 (Medieval Faires)",
+      "zh_name": "中世纪集市",
+      "en_name": "Medieval Faires",
       "cost": 385,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "发光的不一定都是金子；你常常会听到大家这样说。 ——威廉·莎士比亚"
     },
     {
       "id": "CIVIC_GUILDS",
-      "name": "Guilds",
+      "name": "行会 (Guilds)",
+      "zh_name": "行会",
+      "en_name": "Guilds",
       "cost": 385,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "每个人都应该让他的儿子多学习有用的商业或专业知识，这样将来才能改变命运…他们才能依靠自己的有形资产生存下来。 ——费尼斯·巴纳姆"
     },
     {
       "id": "CIVIC_DIVINE_RIGHT",
-      "name": "Divine Right",
+      "name": "君权神授 (Divine Right)",
+      "zh_name": "君权神授",
+      "en_name": "Divine Right",
       "cost": 290,
-      "era": "Medieval"
+      "era": "Medieval",
+      "quote": "我用随后这条神学原理推断出的这一点涉及到了王权，质疑上帝可以做的事是亵渎神明…所以质疑国王可以做的事则是在煽动叛乱。 ——詹姆斯一世"
     },
     {
       "id": "CIVIC_EXPLORATION",
-      "name": "Exploration",
+      "name": "探索 (Exploration)",
+      "zh_name": "探索",
+      "en_name": "Exploration",
       "cost": 400,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "一旦停止探索，我们将生活在一个停滞不前的世界，缺乏好奇心，没有梦想。 ——奈尔·德葛拉司·泰森"
     },
     {
       "id": "CIVIC_HUMANISM",
-      "name": "Humanism",
+      "name": "人文主义 (Humanism)",
+      "zh_name": "人文主义",
+      "en_name": "Humanism",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "人文主义的四大特点是：好奇心、自由思想、相信好品味、相信人类。 ——E·M·福斯特"
     },
     {
       "id": "CIVIC_DIPLOMATIC_SERVICE",
-      "name": "Diplomatic Service",
+      "name": "外交服务 (Diplomatic Service)",
+      "zh_name": "外交服务",
+      "en_name": "Diplomatic Service",
       "cost": 540,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "外交领域有两个问题：小问题和大问题。小问题自己会消失，大问题你无可奈何。 ——帕特里克·麦基尼斯"
     },
     {
       "id": "CIVIC_REFORMED_CHURCH",
-      "name": "Reformed Church",
+      "name": "归正教会 (Reformed Church)",
+      "zh_name": "归正教会",
+      "en_name": "Reformed Church",
       "cost": 400,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "我不想把自己交托给天堂和地狱，你看，我有朋友在这两个地方。 ——马克·吐温"
     },
     {
       "id": "CIVIC_MERCANTILISM",
-      "name": "Mercantilism",
+      "name": "重商主义 (Mercantilism)",
+      "zh_name": "重商主义",
+      "en_name": "Mercantilism",
       "cost": 655,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "但是在市场经济条件下，个人可能会逃脱国家的管束。 ——彼得·伯格"
     },
     {
       "id": "CIVIC_THE_ENLIGHTENMENT",
-      "name": "The Enlightenment",
+      "name": "启蒙运动 (The Enlightenment)",
+      "zh_name": "启蒙运动",
+      "en_name": "The Enlightenment",
       "cost": 655,
-      "era": "Renaissance"
+      "era": "Renaissance",
+      "quote": "新观念总是遭到怀疑和反对，没有别的原因，只是因为人们习惯于旧的东西。 —— 约翰·洛克"
     },
     {
       "id": "CIVIC_COLONIALISM",
-      "name": "Colonialism",
+      "name": "殖民主义 (Colonialism)",
+      "zh_name": "殖民主义",
+      "en_name": "Colonialism",
       "cost": 725,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "记住：政治、殖民主义、帝国主义和战争都源于人类的大脑。 ——维莱亚努尔·拉马钱德兰"
     },
     {
       "id": "CIVIC_CIVIL_ENGINEERING",
-      "name": "Civil Engineering",
+      "name": "土木工程 (Civil Engineering)",
+      "zh_name": "土木工程",
+      "en_name": "Civil Engineering",
       "cost": 920,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "改造使弯路变得笔直；但未经改造的弯路才是成就天才之路。 ——威廉·布雷克"
     },
     {
       "id": "CIVIC_NATIONALISM",
-      "name": "Nationalism",
+      "name": "民族主义 (Nationalism)",
+      "zh_name": "民族主义",
+      "en_name": "Nationalism",
       "cost": 920,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "民族主义促使国家产生，而不是国家产生了民族主义。 ——欧内斯特·葛尔纳"
     },
     {
       "id": "CIVIC_OPERA_BALLET",
-      "name": "Opera Ballet",
+      "name": "歌剧与芭蕾 (Opera Ballet)",
+      "zh_name": "歌剧与芭蕾",
+      "en_name": "Opera Ballet",
       "cost": 725,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "歌剧是，当一个人背后被捅了 一刀，他不流血，他唱歌剧。  ——罗伯特·本奇利"
     },
     {
       "id": "CIVIC_NATURAL_HISTORY",
-      "name": "Natural History",
+      "name": "自然历史 (Natural History)",
+      "zh_name": "自然历史",
+      "en_name": "Natural History",
       "cost": 870,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "如果我参与造物，我会提出一些有用的建议使宇宙秩序更加和谐。 ——纳尔逊·艾格林"
     },
     {
       "id": "CIVIC_SCORCHED_EARTH",
-      "name": "Scorched Earth",
+      "name": "焦土政策 (Scorched Earth)",
+      "zh_name": "焦土政策",
+      "en_name": "Scorched Earth",
       "cost": 1060,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "战争就是地狱。 ——威廉·特库姆塞·谢尔曼"
     },
     {
       "id": "CIVIC_URBANIZATION",
-      "name": "Urbanization",
+      "name": "城市化 (Urbanization)",
+      "zh_name": "城市化",
+      "en_name": "Urbanization",
       "cost": 1060,
-      "era": "Industrial"
+      "era": "Industrial",
+      "quote": "工业革命和城市规模的增长让人感到渺小。 ——温特·瑟夫"
     },
     {
       "id": "CIVIC_CONSERVATION",
-      "name": "Conservation",
+      "name": "自然保护 (Conservation)",
+      "zh_name": "自然保护",
+      "en_name": "Conservation",
       "cost": 1255,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "水和空气这两样生活必须品已变成全球垃圾桶了。 ——雅克·伊夫·库斯托"
     },
     {
       "id": "CIVIC_CAPITALISM",
-      "name": "Capitalism",
+      "name": "资本主义 (Capitalism)",
+      "zh_name": "资本主义",
+      "en_name": "Capitalism",
       "cost": 1560,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "资本主义的固有邪恶是幸福的不平等分享；社会主义的固有邪恶是痛苦的平等分享。  ——温斯顿·丘吉尔"
     },
     {
       "id": "CIVIC_NUCLEAR_PROGRAM",
-      "name": "Nuclear Program",
+      "name": "核计划 (Nuclear Program)",
+      "zh_name": "核计划",
+      "en_name": "Nuclear Program",
       "cost": 1715,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "原子能的释放，改变了除人类思考模式之外的一切…解决这个问题在于人心。早知道我就当个钟表匠了。 ——阿尔伯特·爱因斯坦"
     },
     {
       "id": "CIVIC_MASS_MEDIA",
-      "name": "Mass Media",
+      "name": "大众传媒 (Mass Media)",
+      "zh_name": "大众传媒",
+      "en_name": "Mass Media",
       "cost": 1410,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "大众媒体的作用并不是让你产生信仰，而是让你保持对政党组织的兴趣。 ——克里斯托弗·拉什"
     },
     {
       "id": "CIVIC_MOBILIZATION",
-      "name": "Mobilization",
+      "name": "动员 (Mobilization)",
+      "zh_name": "动员",
+      "en_name": "Mobilization",
       "cost": 1410,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "当他们为战争做准备时，那些最有发言权的人大量发表和平宣言，直到完成整个动员过程。 ——斯蒂芬·茨威格"
     },
     {
       "id": "CIVIC_IDEOLOGY",
-      "name": "Ideology",
+      "name": "意识形态 (Ideology)",
+      "zh_name": "意识形态",
+      "en_name": "Ideology",
       "cost": 660,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "它表明没有一种系统，即使最不人道的，可以离开意识形态而继续存在。 ——乔·斯洛沃"
     },
     {
       "id": "CIVIC_SUFFRAGE",
-      "name": "Suffrage",
+      "name": "选举权 (Suffrage)",
+      "zh_name": "选举权",
+      "en_name": "Suffrage",
       "cost": 1715,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "为什么对女性区别对待？妇女参政会成功，别在乎这些可怜的游击队性质的反对派。 ——维多利亚·伍德胡尔"
     },
     {
       "id": "CIVIC_TOTALITARIANISM",
-      "name": "Totalitarianism",
+      "name": "极权主义 (Totalitarianism)",
+      "zh_name": "极权主义",
+      "en_name": "Totalitarianism",
       "cost": 1715,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "只有暴徒和精英会被极权主义本身的势头所吸引。依靠宣传才能获取民心。 ——汉娜•阿伦特"
     },
     {
       "id": "CIVIC_CLASS_STRUGGLE",
-      "name": "Class Struggle",
+      "name": "阶级斗争 (Class Struggle)",
+      "zh_name": "阶级斗争",
+      "en_name": "Class Struggle",
       "cost": 1715,
-      "era": "Modern"
+      "era": "Modern",
+      "quote": "这就是阶级斗争，好吧，但我所处的阶级是富人阶级，它发动了战争…我们会取得胜利。 ——沃伦·巴菲特"
     },
     {
       "id": "CIVIC_COLD_WAR",
-      "name": "Cold War",
+      "name": "冷战 (Cold War)",
+      "zh_name": "冷战",
+      "en_name": "Cold War",
       "cost": 2185,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "从波罗的海的斯德丁到亚得里亚海的德里雅斯特，一幅横贯欧洲大陆的铁幕已经拉下。 ——温斯顿·丘吉尔"
     },
     {
       "id": "CIVIC_PROFESSIONAL_SPORTS",
-      "name": "Professional Sports",
+      "name": "职业体育 (Professional Sports)",
+      "zh_name": "职业体育",
+      "en_name": "Professional Sports",
       "cost": 2185,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "如果输赢不代表一切，那为什么还要在比赛中记分呢？ ——文斯·隆巴迪"
     },
     {
       "id": "CIVIC_CULTURAL_HERITAGE",
-      "name": "Cultural Heritage",
+      "name": "文化遗产 (Cultural Heritage)",
+      "zh_name": "文化遗产",
+      "en_name": "Cultural Heritage",
       "cost": 1955,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "一个对历史、起源和文化不了解的人，就好比没有根的大树。 ——马库斯·加维"
     },
     {
       "id": "CIVIC_RAPID_DEPLOYMENT",
-      "name": "Rapid Deployment",
+      "name": "快速部署 (Rapid Deployment)",
+      "zh_name": "快速部署",
+      "en_name": "Rapid Deployment",
       "cost": 2415,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "立即认真执行一项好计划远比下周执行一项完美计划好。 ——乔治·史密斯·巴顿"
     },
     {
       "id": "CIVIC_SPACE_RACE",
-      "name": "Space Race",
+      "name": "太空竞赛 (Space Race)",
+      "zh_name": "太空竞赛",
+      "en_name": "Space Race",
       "cost": 2415,
-      "era": "Atomic"
+      "era": "Atomic",
+      "quote": "我们选择在这个十年飞向月球，并做些其他的事，不是因为它们容易，而是因为它们很难。 ——约翰·肯尼迪"
     },
     {
       "id": "CIVIC_GLOBALIZATION",
-      "name": "Globalization",
+      "name": "全球化 (Globalization)",
+      "zh_name": "全球化",
+      "en_name": "Globalization",
       "cost": 2880,
-      "era": "Information"
+      "era": "Information",
+      "quote": "据说，反对全球化就像反对万有引力定律。 ——科菲·安南"
     },
     {
       "id": "CIVIC_SOCIAL_MEDIA",
-      "name": "Social Media",
+      "name": "社交媒体 (Social Media)",
+      "zh_name": "社交媒体",
+      "en_name": "Social Media",
       "cost": 2880,
-      "era": "Information"
+      "era": "Information",
+      "quote": "在我所有重要的毫无意义的事里面，我应该先告诉你哪一件呢？ ——简·奥斯汀"
     },
     {
       "id": "CIVIC_FUTURE_CIVIC",
-      "name": "Future Civic",
+      "name": "未来市政 (Future Civic)",
+      "zh_name": "未来市政",
+      "en_name": "Future Civic",
       "cost": 3200,
-      "era": "Information"
+      "era": "Information",
+      "quote": "绝不能根据过去而规划未来。 ——埃德蒙·伯克"
     }
   ],
   "units": [
     {
       "id": "UNIT_SETTLER",
-      "name": "Settler",
+      "name": "开拓者 (Settler)",
+      "zh_name": "开拓者",
       "cost": 80,
       "moves": 2,
       "combat": 0,
@@ -732,7 +1090,8 @@
     },
     {
       "id": "UNIT_BUILDER",
-      "name": "Builder",
+      "name": "建造者 (Builder)",
+      "zh_name": "建造者",
       "cost": 50,
       "moves": 2,
       "combat": 0,
@@ -741,7 +1100,8 @@
     },
     {
       "id": "UNIT_TRADER",
-      "name": "Trader",
+      "name": "商人 (Trader)",
+      "zh_name": "商人",
       "cost": 40,
       "moves": 2,
       "combat": 0,
@@ -750,7 +1110,8 @@
     },
     {
       "id": "UNIT_MISSIONARY",
-      "name": "Missionary",
+      "name": "Missionary (Missionary)",
+      "zh_name": "Missionary",
       "cost": 75,
       "moves": 4,
       "combat": 0,
@@ -759,7 +1120,8 @@
     },
     {
       "id": "UNIT_APOSTLE",
-      "name": "Apostle",
+      "name": "Apostle (Apostle)",
+      "zh_name": "Apostle",
       "cost": 200,
       "moves": 4,
       "combat": 0,
@@ -768,7 +1130,8 @@
     },
     {
       "id": "UNIT_INQUISITOR",
-      "name": "Inquisitor",
+      "name": "Inquisitor (Inquisitor)",
+      "zh_name": "Inquisitor",
       "cost": 75,
       "moves": 4,
       "combat": 0,
@@ -777,7 +1140,8 @@
     },
     {
       "id": "UNIT_GURU",
-      "name": "Guru",
+      "name": "Guru (Guru)",
+      "zh_name": "Guru",
       "cost": 120,
       "moves": 4,
       "combat": 0,
@@ -786,7 +1150,8 @@
     },
     {
       "id": "UNIT_WARRIOR_MONK",
-      "name": "Warrior Monk",
+      "name": "Warrior Monk (Warrior Monk)",
+      "zh_name": "Warrior Monk",
       "cost": 100,
       "moves": 3,
       "combat": 40,
@@ -795,7 +1160,8 @@
     },
     {
       "id": "UNIT_ARCHAEOLOGIST",
-      "name": "Archaeologist",
+      "name": "Archaeologist (Archaeologist)",
+      "zh_name": "Archaeologist",
       "cost": 400,
       "moves": 4,
       "combat": 0,
@@ -804,7 +1170,8 @@
     },
     {
       "id": "UNIT_GREAT_GENERAL",
-      "name": "Great General",
+      "name": "Great General (Great General)",
+      "zh_name": "Great General",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -813,7 +1180,8 @@
     },
     {
       "id": "UNIT_GREAT_ADMIRAL",
-      "name": "Great Admiral",
+      "name": "Great Admiral (Great Admiral)",
+      "zh_name": "Great Admiral",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -822,7 +1190,8 @@
     },
     {
       "id": "UNIT_GREAT_ENGINEER",
-      "name": "Great Engineer",
+      "name": "Great Engineer (Great Engineer)",
+      "zh_name": "Great Engineer",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -831,7 +1200,8 @@
     },
     {
       "id": "UNIT_GREAT_MERCHANT",
-      "name": "Great Merchant",
+      "name": "Great Merchant (Great Merchant)",
+      "zh_name": "Great Merchant",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -840,7 +1210,8 @@
     },
     {
       "id": "UNIT_GREAT_PROPHET",
-      "name": "Great Prophet",
+      "name": "Great Prophet (Great Prophet)",
+      "zh_name": "Great Prophet",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -849,7 +1220,8 @@
     },
     {
       "id": "UNIT_GREAT_SCIENTIST",
-      "name": "Great Scientist",
+      "name": "Great Scientist (Great Scientist)",
+      "zh_name": "Great Scientist",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -858,7 +1230,8 @@
     },
     {
       "id": "UNIT_GREAT_WRITER",
-      "name": "Great Writer",
+      "name": "Great Writer (Great Writer)",
+      "zh_name": "Great Writer",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -867,7 +1240,8 @@
     },
     {
       "id": "UNIT_GREAT_ARTIST",
-      "name": "Great Artist",
+      "name": "Great Artist (Great Artist)",
+      "zh_name": "Great Artist",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -876,7 +1250,8 @@
     },
     {
       "id": "UNIT_GREAT_MUSICIAN",
-      "name": "Great Musician",
+      "name": "Great Musician (Great Musician)",
+      "zh_name": "Great Musician",
       "cost": 1,
       "moves": 4,
       "combat": 0,
@@ -885,7 +1260,8 @@
     },
     {
       "id": "UNIT_SPY",
-      "name": "Spy",
+      "name": "Spy (Spy)",
+      "zh_name": "Spy",
       "cost": 225,
       "moves": 1,
       "combat": 0,
@@ -894,7 +1270,8 @@
     },
     {
       "id": "UNIT_NATURALIST",
-      "name": "Naturalist",
+      "name": "Naturalist (Naturalist)",
+      "zh_name": "Naturalist",
       "cost": 800,
       "moves": 4,
       "combat": 0,
@@ -903,7 +1280,8 @@
     },
     {
       "id": "UNIT_SCOUT",
-      "name": "Scout",
+      "name": "Scout (Scout)",
+      "zh_name": "Scout",
       "cost": 30,
       "moves": 3,
       "combat": 10,
@@ -912,7 +1290,8 @@
     },
     {
       "id": "UNIT_WARRIOR",
-      "name": "Warrior",
+      "name": "勇士 (Warrior)",
+      "zh_name": "勇士",
       "cost": 40,
       "moves": 2,
       "combat": 20,
@@ -921,7 +1300,8 @@
     },
     {
       "id": "UNIT_SLINGER",
-      "name": "Slinger",
+      "name": "投石兵 (Slinger)",
+      "zh_name": "投石兵",
       "cost": 35,
       "moves": 2,
       "combat": 5,
@@ -930,7 +1310,8 @@
     },
     {
       "id": "UNIT_BARBARIAN_HORSEMAN",
-      "name": "Barbarian Horseman",
+      "name": "Barbarian Horseman (Barbarian Horseman)",
+      "zh_name": "Barbarian Horseman",
       "cost": 40,
       "moves": 3,
       "combat": 20,
@@ -939,7 +1320,8 @@
     },
     {
       "id": "UNIT_BARBARIAN_HORSE_ARCHER",
-      "name": "Barbarian Horse Archer",
+      "name": "Barbarian Horse Archer (Barbarian Horse Archer)",
+      "zh_name": "Barbarian Horse Archer",
       "cost": 35,
       "moves": 3,
       "combat": 10,
@@ -948,7 +1330,8 @@
     },
     {
       "id": "UNIT_SUMERIAN_WAR_CART",
-      "name": "Sumerian War Cart",
+      "name": "Sumerian War Cart (Sumerian War Cart)",
+      "zh_name": "Sumerian War Cart",
       "cost": 55,
       "moves": 3,
       "combat": 30,
@@ -957,7 +1340,8 @@
     },
     {
       "id": "UNIT_GALLEY",
-      "name": "Galley",
+      "name": "桨帆船 (Galley)",
+      "zh_name": "桨帆船",
       "cost": 65,
       "moves": 3,
       "combat": 30,
@@ -966,7 +1350,8 @@
     },
     {
       "id": "UNIT_NORWEGIAN_LONGSHIP",
-      "name": "Norwegian Longship",
+      "name": "Norwegian Longship (Norwegian Longship)",
+      "zh_name": "Norwegian Longship",
       "cost": 65,
       "moves": 3,
       "combat": 35,
@@ -975,7 +1360,8 @@
     },
     {
       "id": "UNIT_ARCHER",
-      "name": "Archer",
+      "name": "弓箭手 (Archer)",
+      "zh_name": "弓箭手",
       "cost": 60,
       "moves": 2,
       "combat": 15,
@@ -984,7 +1370,8 @@
     },
     {
       "id": "UNIT_SPEARMAN",
-      "name": "Spearman",
+      "name": "长矛兵 (Spearman)",
+      "zh_name": "长矛兵",
       "cost": 65,
       "moves": 2,
       "combat": 25,
@@ -993,7 +1380,8 @@
     },
     {
       "id": "UNIT_HEAVY_CHARIOT",
-      "name": "Heavy Chariot",
+      "name": "重装战车 (Heavy Chariot)",
+      "zh_name": "重装战车",
       "cost": 65,
       "moves": 2,
       "combat": 28,
@@ -1002,7 +1390,8 @@
     },
     {
       "id": "UNIT_BATTERING_RAM",
-      "name": "Battering Ram",
+      "name": "Battering Ram (Battering Ram)",
+      "zh_name": "Battering Ram",
       "cost": 65,
       "moves": 2,
       "combat": 0,
@@ -1011,7 +1400,8 @@
     },
     {
       "id": "UNIT_GREEK_HOPLITE",
-      "name": "Greek Hoplite",
+      "name": "Greek Hoplite (Greek Hoplite)",
+      "zh_name": "Greek Hoplite",
       "cost": 65,
       "moves": 2,
       "combat": 28,
@@ -1020,7 +1410,8 @@
     },
     {
       "id": "UNIT_SWORDSMAN",
-      "name": "Swordsman",
+      "name": "剑客 (Swordsman)",
+      "zh_name": "剑客",
       "cost": 90,
       "moves": 2,
       "combat": 35,
@@ -1029,7 +1420,8 @@
     },
     {
       "id": "UNIT_HORSEMAN",
-      "name": "Horseman",
+      "name": "骑手 (Horseman)",
+      "zh_name": "骑手",
       "cost": 80,
       "moves": 4,
       "combat": 36,
@@ -1038,7 +1430,8 @@
     },
     {
       "id": "UNIT_SCYTHIAN_HORSE_ARCHER",
-      "name": "Scythian Horse Archer",
+      "name": "Scythian Horse Archer (Scythian Horse Archer)",
+      "zh_name": "Scythian Horse Archer",
       "cost": 100,
       "moves": 4,
       "combat": 20,
@@ -1047,7 +1440,8 @@
     },
     {
       "id": "UNIT_ROMAN_LEGION",
-      "name": "Roman Legion",
+      "name": "罗马军团 (Roman Legion)",
+      "zh_name": "罗马军团",
       "cost": 110,
       "moves": 2,
       "combat": 40,
@@ -1056,7 +1450,8 @@
     },
     {
       "id": "UNIT_KONGO_SHIELD_BEARER",
-      "name": "Kongo Shield Bearer",
+      "name": "Kongo Shield Bearer (Kongo Shield Bearer)",
+      "zh_name": "Kongo Shield Bearer",
       "cost": 110,
       "moves": 2,
       "combat": 38,
@@ -1065,7 +1460,8 @@
     },
     {
       "id": "UNIT_CATAPULT",
-      "name": "Catapult",
+      "name": "投石机 (Catapult)",
+      "zh_name": "投石机",
       "cost": 120,
       "moves": 2,
       "combat": 25,
@@ -1074,7 +1470,8 @@
     },
     {
       "id": "UNIT_SIEGE_TOWER",
-      "name": "Siege Tower",
+      "name": "Siege Tower (Siege Tower)",
+      "zh_name": "Siege Tower",
       "cost": 100,
       "moves": 2,
       "combat": 0,
@@ -1083,7 +1480,8 @@
     },
     {
       "id": "UNIT_QUADRIREME",
-      "name": "Quadrireme",
+      "name": "四段帆船 (Quadrireme)",
+      "zh_name": "四段帆船",
       "cost": 120,
       "moves": 3,
       "combat": 20,
@@ -1092,7 +1490,8 @@
     },
     {
       "id": "UNIT_EGYPTIAN_CHARIOT_ARCHER",
-      "name": "Egyptian Chariot Archer",
+      "name": "Egyptian Chariot Archer (Egyptian Chariot Archer)",
+      "zh_name": "Egyptian Chariot Archer",
       "cost": 120,
       "moves": 2,
       "combat": 25,
@@ -1101,7 +1500,8 @@
     },
     {
       "id": "UNIT_JAPANESE_SAMURAI",
-      "name": "Japanese Samurai",
+      "name": "Japanese Samurai (Japanese Samurai)",
+      "zh_name": "Japanese Samurai",
       "cost": 160,
       "moves": 2,
       "combat": 48,
@@ -1110,7 +1510,8 @@
     },
     {
       "id": "UNIT_NORWEGIAN_BERSERKER",
-      "name": "Norwegian Berserker",
+      "name": "Norwegian Berserker (Norwegian Berserker)",
+      "zh_name": "Norwegian Berserker",
       "cost": 160,
       "moves": 2,
       "combat": 48,
@@ -1119,7 +1520,8 @@
     },
     {
       "id": "UNIT_KNIGHT",
-      "name": "Knight",
+      "name": "骑士 (Knight)",
+      "zh_name": "骑士",
       "cost": 180,
       "moves": 4,
       "combat": 50,
@@ -1128,7 +1530,8 @@
     },
     {
       "id": "UNIT_INDIAN_VARU",
-      "name": "Indian Varu",
+      "name": "Indian Varu (Indian Varu)",
+      "zh_name": "Indian Varu",
       "cost": 120,
       "moves": 2,
       "combat": 40,
@@ -1137,7 +1540,8 @@
     },
     {
       "id": "UNIT_ARABIAN_MAMLUK",
-      "name": "Arabian Mamluk",
+      "name": "Arabian Mamluk (Arabian Mamluk)",
+      "zh_name": "Arabian Mamluk",
       "cost": 180,
       "moves": 4,
       "combat": 50,
@@ -1146,7 +1550,8 @@
     },
     {
       "id": "UNIT_CROSSBOWMAN",
-      "name": "Crossbowman",
+      "name": "弩手 (Crossbowman)",
+      "zh_name": "弩手",
       "cost": 180,
       "moves": 2,
       "combat": 30,
@@ -1155,7 +1560,8 @@
     },
     {
       "id": "UNIT_CHINESE_CROUCHING_TIGER",
-      "name": "Chinese Crouching Tiger",
+      "name": "虎蹲炮 (Chinese Crouching Tiger)",
+      "zh_name": "虎蹲炮",
       "cost": 140,
       "moves": 2,
       "combat": 30,
@@ -1164,7 +1570,8 @@
     },
     {
       "id": "UNIT_MILITARY_ENGINEER",
-      "name": "Military Engineer",
+      "name": "Military Engineer (Military Engineer)",
+      "zh_name": "Military Engineer",
       "cost": 170,
       "moves": 2,
       "combat": 0,
@@ -1173,7 +1580,8 @@
     },
     {
       "id": "UNIT_PIKEMAN",
-      "name": "Pikeman",
+      "name": "枪兵 (Pikeman)",
+      "zh_name": "枪兵",
       "cost": 200,
       "moves": 2,
       "combat": 45,
@@ -1182,7 +1590,8 @@
     },
     {
       "id": "UNIT_MUSKETMAN",
-      "name": "Musketman",
+      "name": "火枪手 (Musketman)",
+      "zh_name": "火枪手",
       "cost": 240,
       "moves": 2,
       "combat": 55,
@@ -1191,7 +1600,8 @@
     },
     {
       "id": "UNIT_SPANISH_CONQUISTADOR",
-      "name": "Spanish Conquistador",
+      "name": "Spanish Conquistador (Spanish Conquistador)",
+      "zh_name": "Spanish Conquistador",
       "cost": 250,
       "moves": 2,
       "combat": 58,
@@ -1200,7 +1610,8 @@
     },
     {
       "id": "UNIT_CARAVEL",
-      "name": "Caravel",
+      "name": "Caravel (Caravel)",
+      "zh_name": "Caravel",
       "cost": 240,
       "moves": 4,
       "combat": 55,
@@ -1209,7 +1620,8 @@
     },
     {
       "id": "UNIT_BOMBARD",
-      "name": "Bombard",
+      "name": "射石炮 (Bombard)",
+      "zh_name": "射石炮",
       "cost": 280,
       "moves": 2,
       "combat": 45,
@@ -1218,7 +1630,8 @@
     },
     {
       "id": "UNIT_FRIGATE",
-      "name": "Frigate",
+      "name": "Frigate (Frigate)",
+      "zh_name": "Frigate",
       "cost": 280,
       "moves": 4,
       "combat": 45,
@@ -1227,7 +1640,8 @@
     },
     {
       "id": "UNIT_PRIVATEER",
-      "name": "Privateer",
+      "name": "Privateer (Privateer)",
+      "zh_name": "Privateer",
       "cost": 280,
       "moves": 4,
       "combat": 40,
@@ -1236,7 +1650,8 @@
     },
     {
       "id": "UNIT_ENGLISH_SEADOG",
-      "name": "English Seadog",
+      "name": "English Seadog (English Seadog)",
+      "zh_name": "English Seadog",
       "cost": 280,
       "moves": 4,
       "combat": 40,
@@ -1245,7 +1660,8 @@
     },
     {
       "id": "UNIT_FIELD_CANNON",
-      "name": "Field Cannon",
+      "name": "野战加农炮 (Field Cannon)",
+      "zh_name": "野战加农炮",
       "cost": 330,
       "moves": 2,
       "combat": 50,
@@ -1254,7 +1670,8 @@
     },
     {
       "id": "UNIT_CAVALRY",
-      "name": "Cavalry",
+      "name": "Cavalry (Cavalry)",
+      "zh_name": "Cavalry",
       "cost": 330,
       "moves": 5,
       "combat": 62,
@@ -1263,7 +1680,8 @@
     },
     {
       "id": "UNIT_RUSSIAN_COSSACK",
-      "name": "Russian Cossack",
+      "name": "Russian Cossack (Russian Cossack)",
+      "zh_name": "Russian Cossack",
       "cost": 340,
       "moves": 5,
       "combat": 67,
@@ -1272,7 +1690,8 @@
     },
     {
       "id": "UNIT_ENGLISH_REDCOAT",
-      "name": "English Redcoat",
+      "name": "English Redcoat (English Redcoat)",
+      "zh_name": "English Redcoat",
       "cost": 360,
       "moves": 2,
       "combat": 70,
@@ -1281,7 +1700,8 @@
     },
     {
       "id": "UNIT_FRENCH_GARDE_IMPERIALE",
-      "name": "French Garde Imperiale",
+      "name": "French Garde Imperiale (French Garde Imperiale)",
+      "zh_name": "French Garde Imperiale",
       "cost": 360,
       "moves": 2,
       "combat": 70,
@@ -1290,7 +1710,8 @@
     },
     {
       "id": "UNIT_MEDIC",
-      "name": "Medic",
+      "name": "Medic (Medic)",
+      "zh_name": "Medic",
       "cost": 370,
       "moves": 2,
       "combat": 0,
@@ -1299,7 +1720,8 @@
     },
     {
       "id": "UNIT_IRONCLAD",
-      "name": "Ironclad",
+      "name": "Ironclad (Ironclad)",
+      "zh_name": "Ironclad",
       "cost": 380,
       "moves": 5,
       "combat": 70,
@@ -1308,7 +1730,8 @@
     },
     {
       "id": "UNIT_AMERICAN_ROUGH_RIDER",
-      "name": "American Rough Rider",
+      "name": "American Rough Rider (American Rough Rider)",
+      "zh_name": "American Rough Rider",
       "cost": 385,
       "moves": 5,
       "combat": 67,
@@ -1317,7 +1740,8 @@
     },
     {
       "id": "UNIT_RANGER",
-      "name": "Ranger",
+      "name": "Ranger (Ranger)",
+      "zh_name": "Ranger",
       "cost": 380,
       "moves": 3,
       "combat": 45,
@@ -1326,7 +1750,8 @@
     },
     {
       "id": "UNIT_OBSERVATION_BALLOON",
-      "name": "Observation Balloon",
+      "name": "Observation Balloon (Observation Balloon)",
+      "zh_name": "Observation Balloon",
       "cost": 240,
       "moves": 2,
       "combat": 0,
@@ -1335,7 +1760,8 @@
     },
     {
       "id": "UNIT_BIPLANE",
-      "name": "Biplane",
+      "name": "Biplane (Biplane)",
+      "zh_name": "Biplane",
       "cost": 430,
       "moves": 6,
       "combat": 80,
@@ -1344,7 +1770,8 @@
     },
     {
       "id": "UNIT_INFANTRY",
-      "name": "Infantry",
+      "name": "Infantry (Infantry)",
+      "zh_name": "Infantry",
       "cost": 430,
       "moves": 2,
       "combat": 75,
@@ -1353,7 +1780,8 @@
     },
     {
       "id": "UNIT_ARTILLERY",
-      "name": "Artillery",
+      "name": "Artillery (Artillery)",
+      "zh_name": "Artillery",
       "cost": 430,
       "moves": 2,
       "combat": 60,
@@ -1362,7 +1790,8 @@
     },
     {
       "id": "UNIT_BATTLESHIP",
-      "name": "Battleship",
+      "name": "Battleship (Battleship)",
+      "zh_name": "Battleship",
       "cost": 430,
       "moves": 5,
       "combat": 60,
@@ -1371,7 +1800,8 @@
     },
     {
       "id": "UNIT_BRAZILIAN_MINAS_GERAES",
-      "name": "Brazilian Minas Geraes",
+      "name": "Brazilian Minas Geraes (Brazilian Minas Geraes)",
+      "zh_name": "Brazilian Minas Geraes",
       "cost": 430,
       "moves": 5,
       "combat": 70,
@@ -1380,7 +1810,8 @@
     },
     {
       "id": "UNIT_SUBMARINE",
-      "name": "Submarine",
+      "name": "Submarine (Submarine)",
+      "zh_name": "Submarine",
       "cost": 480,
       "moves": 3,
       "combat": 65,
@@ -1389,7 +1820,8 @@
     },
     {
       "id": "UNIT_GERMAN_UBOAT",
-      "name": "German Uboat",
+      "name": "German Uboat (German Uboat)",
+      "zh_name": "German Uboat",
       "cost": 430,
       "moves": 3,
       "combat": 65,
@@ -1398,7 +1830,8 @@
     },
     {
       "id": "UNIT_AT_CREW",
-      "name": "At Crew",
+      "name": "At Crew (At Crew)",
+      "zh_name": "At Crew",
       "cost": 400,
       "moves": 2,
       "combat": 75,
@@ -1407,7 +1840,8 @@
     },
     {
       "id": "UNIT_TANK",
-      "name": "Tank",
+      "name": "Tank (Tank)",
+      "zh_name": "Tank",
       "cost": 480,
       "moves": 4,
       "combat": 85,
@@ -1416,7 +1850,8 @@
     },
     {
       "id": "UNIT_FIGHTER",
-      "name": "Fighter",
+      "name": "Fighter (Fighter)",
+      "zh_name": "Fighter",
       "cost": 520,
       "moves": 8,
       "combat": 100,
@@ -1425,7 +1860,8 @@
     },
     {
       "id": "UNIT_AMERICAN_P51",
-      "name": "American P51",
+      "name": "American P51 (American P51)",
+      "zh_name": "American P51",
       "cost": 520,
       "moves": 10,
       "combat": 105,
@@ -1434,7 +1870,8 @@
     },
     {
       "id": "UNIT_BOMBER",
-      "name": "Bomber",
+      "name": "Bomber (Bomber)",
+      "zh_name": "Bomber",
       "cost": 560,
       "moves": 10,
       "combat": 85,
@@ -1443,7 +1880,8 @@
     },
     {
       "id": "UNIT_ANTIAIR_GUN",
-      "name": "Antiair Gun",
+      "name": "Antiair Gun (Antiair Gun)",
+      "zh_name": "Antiair Gun",
       "cost": 455,
       "moves": 2,
       "combat": 0,
@@ -1452,7 +1890,8 @@
     },
     {
       "id": "UNIT_MACHINE_GUN",
-      "name": "Machine Gun",
+      "name": "Machine Gun (Machine Gun)",
+      "zh_name": "Machine Gun",
       "cost": 540,
       "moves": 2,
       "combat": 70,
@@ -1461,7 +1900,8 @@
     },
     {
       "id": "UNIT_AIRCRAFT_CARRIER",
-      "name": "Aircraft Carrier",
+      "name": "Aircraft Carrier (Aircraft Carrier)",
+      "zh_name": "Aircraft Carrier",
       "cost": 540,
       "moves": 3,
       "combat": 65,
@@ -1470,7 +1910,8 @@
     },
     {
       "id": "UNIT_DESTROYER",
-      "name": "Destroyer",
+      "name": "Destroyer (Destroyer)",
+      "zh_name": "Destroyer",
       "cost": 540,
       "moves": 4,
       "combat": 85,
@@ -1479,7 +1920,8 @@
     },
     {
       "id": "UNIT_HELICOPTER",
-      "name": "Helicopter",
+      "name": "Helicopter (Helicopter)",
+      "zh_name": "Helicopter",
       "cost": 600,
       "moves": 4,
       "combat": 86,
@@ -1488,7 +1930,8 @@
     },
     {
       "id": "UNIT_NUCLEAR_SUBMARINE",
-      "name": "Nuclear Submarine",
+      "name": "Nuclear Submarine (Nuclear Submarine)",
+      "zh_name": "Nuclear Submarine",
       "cost": 680,
       "moves": 4,
       "combat": 80,
@@ -1497,7 +1940,8 @@
     },
     {
       "id": "UNIT_MECHANIZED_INFANTRY",
-      "name": "Mechanized Infantry",
+      "name": "Mechanized Infantry (Mechanized Infantry)",
+      "zh_name": "Mechanized Infantry",
       "cost": 650,
       "moves": 3,
       "combat": 85,
@@ -1506,7 +1950,8 @@
     },
     {
       "id": "UNIT_ROCKET_ARTILLERY",
-      "name": "Rocket Artillery",
+      "name": "Rocket Artillery (Rocket Artillery)",
+      "zh_name": "Rocket Artillery",
       "cost": 680,
       "moves": 3,
       "combat": 70,
@@ -1515,7 +1960,8 @@
     },
     {
       "id": "UNIT_MOBILE_SAM",
-      "name": "Mobile Sam",
+      "name": "Mobile Sam (Mobile Sam)",
+      "zh_name": "Mobile Sam",
       "cost": 590,
       "moves": 3,
       "combat": 0,
@@ -1524,7 +1970,8 @@
     },
     {
       "id": "UNIT_JET_FIGHTER",
-      "name": "Jet Fighter",
+      "name": "Jet Fighter (Jet Fighter)",
+      "zh_name": "Jet Fighter",
       "cost": 650,
       "moves": 10,
       "combat": 110,
@@ -1533,7 +1980,8 @@
     },
     {
       "id": "UNIT_JET_BOMBER",
-      "name": "Jet Bomber",
+      "name": "Jet Bomber (Jet Bomber)",
+      "zh_name": "Jet Bomber",
       "cost": 700,
       "moves": 15,
       "combat": 90,
@@ -1542,7 +1990,8 @@
     },
     {
       "id": "UNIT_MISSILE_CRUISER",
-      "name": "Missile Cruiser",
+      "name": "Missile Cruiser (Missile Cruiser)",
+      "zh_name": "Missile Cruiser",
       "cost": 680,
       "moves": 5,
       "combat": 75,
@@ -1551,7 +2000,8 @@
     },
     {
       "id": "UNIT_MODERN_AT",
-      "name": "Modern At",
+      "name": "Modern At (Modern At)",
+      "zh_name": "Modern At",
       "cost": 580,
       "moves": 3,
       "combat": 85,
@@ -1560,7 +2010,8 @@
     },
     {
       "id": "UNIT_MODERN_ARMOR",
-      "name": "Modern Armor",
+      "name": "Modern Armor (Modern Armor)",
+      "zh_name": "Modern Armor",
       "cost": 680,
       "moves": 4,
       "combat": 95,
@@ -1569,7 +2020,8 @@
     },
     {
       "id": "UNIT_MAN_AT_ARMS",
-      "name": "Man At Arms",
+      "name": "Man At Arms (Man At Arms)",
+      "zh_name": "Man At Arms",
       "cost": 160,
       "moves": 2,
       "combat": 45,
@@ -1578,7 +2030,8 @@
     },
     {
       "id": "UNIT_LINE_INFANTRY",
-      "name": "Line Infantry",
+      "name": "Line Infantry (Line Infantry)",
+      "zh_name": "Line Infantry",
       "cost": 360,
       "moves": 2,
       "combat": 65,
@@ -1587,7 +2040,8 @@
     },
     {
       "id": "UNIT_TREBUCHET",
-      "name": "Trebuchet",
+      "name": "Trebuchet (Trebuchet)",
+      "zh_name": "Trebuchet",
       "cost": 200,
       "moves": 2,
       "combat": 35,
@@ -1914,6 +2368,12 @@
       "id": "BUILDING_MONUMENT",
       "name": "Monument",
       "cost": 60,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_PALACE",
+      "name": "Palace",
+      "cost": 1,
       "district": "DISTRICT_CITY_CENTER"
     },
     {
@@ -2298,6 +2758,12 @@
       "id": "BUILDING_FORBIDDEN_CITY",
       "name": "Forbidden City",
       "cost": 920,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_POTALA_PALACE",
+      "name": "Potala Palace",
+      "cost": 1060,
       "district": "DISTRICT_CITY_CENTER"
     },
     {

@@ -55,7 +55,10 @@
         </div>
       </div>
 
-      <div class="hud-right">
+        <!-- Yield Toggle -->
+        <button class="hud-icon-btn" id="btn-toggle-yields" title="显示/隐藏地块产出 (快捷键: Y)">
+          <span id="yield-toggle-icon">🌾</span> 地块产出
+        </button>
         <!-- Music Toggle -->
         <button class="hud-icon-btn" id="btn-toggle-music" title="播放/静音 文明6原版管弦乐交响原声">
           <span id="music-icon">🎵</span> 原版原声
@@ -75,6 +78,11 @@
     <!-- Main Game Canvas Viewport -->
     <main class="canvas-viewport" id="viewport-container">
       <canvas id="civ-canvas"></canvas>
+
+      <!-- Minimap HUD -->
+      <div class="minimap-container" id="minimap-container" title="大战略小地图 · 点击可快速导览世界">
+        <canvas id="minimap-canvas"></canvas>
+      </div>
 
       <!-- Unit Control Context Popup -->
       <div class="unit-card" id="unit-card" style="display: none;">
@@ -131,6 +139,30 @@
           <button class="close-btn" id="btn-close-tech">✕</button>
         </div>
         <div class="tech-grid" id="tech-tree-container"></div>
+      </div>
+
+      <!-- Civic Tree Modal -->
+      <div class="tech-modal" id="civic-modal" style="display: none;">
+        <div class="city-modal-header">
+          <h3>📜 文明6 市政树 (官方提取 51 项社会市政库)</h3>
+          <button class="close-btn" id="btn-close-civic">✕</button>
+        </div>
+        <div class="tech-grid" id="civic-tree-container"></div>
+      </div>
+
+      <!-- Tech / Civic Breakthrough Modal (Sean Bean Quote Celebration) -->
+      <div class="breakthrough-modal" id="breakthrough-modal" style="display: none;">
+        <div class="breakthrough-laurel">👑 时代里程碑突破</div>
+        <h2 class="breakthrough-title" id="breakthrough-title">陶艺 (Pottery)</h2>
+        <div class="breakthrough-type" id="breakthrough-type">科技研发完成 · RESEARCH COMPLETE</div>
+        <div class="breakthrough-quote-box">
+          <p class="breakthrough-quote" id="breakthrough-quote">"我喜欢猪。狗崇拜人类。猫鄙视人类。猪对我们一视同仁。 ——温斯顿·丘吉尔"</p>
+        </div>
+        <div class="breakthrough-unlocks" id="breakthrough-unlocks">
+          <span class="unlock-tag">🌾 解锁：粮仓</span>
+          <span class="unlock-tag">🌊 解锁：水磨</span>
+        </div>
+        <button class="breakthrough-btn" id="btn-close-breakthrough">确认并继续征程 (Space)</button>
       </div>
 
       <!-- Diplomacy Modal -->
@@ -194,12 +226,13 @@
           <span class="tech-desc">解锁粮仓、水磨建筑建造能力</span>
         </div>
 
-        <div class="civic-card">
+        <div class="civic-card clickable" id="card-active-civic" title="点击打开全量 51 项市政树">
           <div class="tech-card-header">
             <h4>📜 当前社会市政</h4>
+            <span class="badge">展开市政树 ↗</span>
           </div>
           <div class="tech-title" id="current-civic-name">法典 (Code of Laws)</div>
-          <div class="progress-bar"><div class="progress-fill civic" style="width: 40%;"></div></div>
+          <div class="progress-bar"><div class="progress-fill civic" id="civic-progress-bar" style="width: 40%;"></div></div>
           <span class="tech-desc">解锁首批经济方针与军事方针政策卡</span>
         </div>
       </div>
