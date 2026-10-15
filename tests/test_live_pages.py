@@ -26,6 +26,13 @@ def test_live_deployment():
         ("/assets/arx/Civ_LEADER_TRAJAN.png", 200, None),
         ("/assets/arx/BackgroundARX.png", 200, None),
         ("/assets/audio/civ6_theme.ogg", 200, None),
+        ("/GLTFLoader.js", 200, "GLTFLoader"),
+        ("/assets/models/warrior.gltf", 200, "warrior.bin"),
+        ("/assets/models/warrior.bin", 200, None),
+        ("/assets/models/city_building.gltf", 200, "city_building.bin"),
+        ("/assets/textures/terrain_grass.png", 200, None),
+        ("/assets/textures/terrain_ocean.png", 200, None),
+        ("/assets/textures/terrain_mountain.png", 200, None),
     ]
 
     print("=== LIVE GITHUB PAGES DEPLOYMENT VERIFICATION ===")

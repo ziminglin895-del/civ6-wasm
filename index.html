@@ -279,8 +279,52 @@
     <source src="./assets/audio/civ6_theme.ogg" type="audio/ogg">
   </audio>
 
+  <!-- Start Game / Leader Selection Splash Modal -->
+  <div class="splash-screen" id="splash-screen">
+    <div class="splash-card">
+      <img src="./assets/arx/Civ6Logo.png" alt="Civilization VI" class="splash-logo">
+      <h1 class="splash-heading">席德·梅尔的《文明VI》· 全3D网页联机版</h1>
+      <p class="splash-subtitle">基于真实文明6资产逆向工程 · 真实PBR光影 · 3D六角网格 · 原生免串流即开即玩</p>
+
+      <div class="leader-picker-title">选择您的领袖与帝国：</div>
+      <div class="leader-picker-grid" id="leader-picker">
+        <div class="picker-card active" data-leader="QIN">
+          <img src="./assets/arx/Civ_LEADER_QIN.png" alt="秦始皇">
+          <b>秦始皇</b>
+          <span>天朝上国 · 奇迹建造</span>
+        </div>
+        <div class="picker-card" data-leader="TRAJAN">
+          <img src="./assets/arx/Civ_LEADER_TRAJAN.png" alt="图拉真">
+          <b>图拉真</b>
+          <span>罗马军团 · 条条大路</span>
+        </div>
+        <div class="picker-card" data-leader="CLEOPATRA">
+          <img src="./assets/arx/Civ_LEADER_CLEOPATRA.png" alt="克利奥帕特拉">
+          <b>埃及艳后</b>
+          <span>地中海新娘 · 尼罗河赠礼</span>
+        </div>
+        <div class="picker-card" data-leader="GANDHI">
+          <img src="./assets/arx/Civ_LEADER_GANDHI.png" alt="甘地">
+          <b>莫罕达斯·甘地</b>
+          <span>非暴力和平 · 绝对防御</span>
+        </div>
+      </div>
+
+      <div class="splash-quote-box">
+        <p class="splash-quote" id="splash-quote-text">"从水下第一个生命的萌芽开始……到石器时代巨型野兽的咆哮……您已历经漫长岁月，建立起经得起时间考验的伟大文明！ ——肖恩·宾 (Sean Bean)"</p>
+      </div>
+
+      <div class="splash-actions">
+        <button class="splash-start-btn" id="btn-start-game">
+          <span>⚡ 开始征服世界 (BEGIN JOURNEY)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="./three.min.js"></script>
   <script src="./OrbitControls.js"></script>
+  <script src="./GLTFLoader.js"></script>
   <script src="./civ6_boot_bundle.js"></script>
   <script src="./civ6_engine.js"></script>
   <script src="./civ6_network.js"></script>
