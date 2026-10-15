@@ -98,7 +98,14 @@ class Civ6HTTPHandler(BaseHTTPRequestHandler):
             }
             self._send_json(data)
         else:
-            self.send_error(HTTPStatus.NOT_FOUND, "Endpoint not found")
+            # Check if file exists directly under STATIC_DIR (e.g. /style.css, /assets/...)
+            clean_rel = path.lstrip("/")
+            safe_path = os.path.normpath(os.path.join(STATIC_DIR, clean_rel))
+            if safe_path.startswith(STATIC_DIR) and os.path.isfile(safe_path):
+                mime, _ = mimetypes.guess_type(safe_path)
+                self._serve_file(safe_path, mime or "application/octet-stream")
+            else:
+                self.send_error(HTTPStatus.NOT_FOUND, "Endpoint or file not found")
 
     def _serve_file(self, filepath: str, mime_type: str):
         try:

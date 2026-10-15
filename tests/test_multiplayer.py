@@ -113,6 +113,19 @@ def test_multiplayer_http_endpoints():
             assert "technologies" in bundle
             assert len(bundle["technologies"]) >= 50
 
+        # 4. Test root-relative assets (/style.css, /civ6_engine.js, /assets/arx/Civ6Logo.png)
+        with urllib.request.urlopen(f"{base_url}/style.css") as resp:
+            assert resp.status == 200
+            assert "Civilization VI" in resp.read().decode("utf-8")
+
+        with urllib.request.urlopen(f"{base_url}/civ6_engine.js") as resp:
+            assert resp.status == 200
+            assert "Civ6Engine" in resp.read().decode("utf-8")
+
+        with urllib.request.urlopen(f"{base_url}/assets/arx/Civ6Logo.png") as resp:
+            assert resp.status == 200
+            assert len(resp.read()) > 1000
+
     finally:
         server.shutdown()
         server.server_close()

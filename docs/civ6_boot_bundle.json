@@ -1807,6 +1807,578 @@
       "desc": "LOC_CIVILIZATION_ZANZIBAR_DESCRIPTION"
     }
   ],
+  "districts": [
+    {
+      "id": "DISTRICT_CITY_CENTER",
+      "name": "City Center",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_HOLY_SITE",
+      "name": "Holy Site",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_CAMPUS",
+      "name": "Campus",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_ENCAMPMENT",
+      "name": "Encampment",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_HARBOR",
+      "name": "Harbor",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_AERODROME",
+      "name": "Aerodrome",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_COMMERCIAL_HUB",
+      "name": "Commercial Hub",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_ENTERTAINMENT_COMPLEX",
+      "name": "Entertainment Complex",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_THEATER",
+      "name": "Theater",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_INDUSTRIAL_ZONE",
+      "name": "Industrial Zone",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_NEIGHBORHOOD",
+      "name": "Neighborhood",
+      "cost": 54
+    },
+    {
+      "id": "DISTRICT_AQUEDUCT",
+      "name": "Aqueduct",
+      "cost": 36
+    },
+    {
+      "id": "DISTRICT_SPACEPORT",
+      "name": "Spaceport",
+      "cost": 1800
+    },
+    {
+      "id": "DISTRICT_ACROPOLIS",
+      "name": "Acropolis",
+      "cost": 27
+    },
+    {
+      "id": "DISTRICT_BATH",
+      "name": "Bath",
+      "cost": 18
+    },
+    {
+      "id": "DISTRICT_HANSA",
+      "name": "Hansa",
+      "cost": 27
+    },
+    {
+      "id": "DISTRICT_LAVRA",
+      "name": "Lavra",
+      "cost": 27
+    },
+    {
+      "id": "DISTRICT_MBANZA",
+      "name": "Mbanza",
+      "cost": 27
+    },
+    {
+      "id": "DISTRICT_STREET_CARNIVAL",
+      "name": "Street Carnival",
+      "cost": 27
+    },
+    {
+      "id": "DISTRICT_ROYAL_NAVY_DOCKYARD",
+      "name": "Royal Navy Dockyard",
+      "cost": 27
+    }
+  ],
+  "buildings": [
+    {
+      "id": "BUILDING_MONUMENT",
+      "name": "Monument",
+      "cost": 60,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_BARRACKS",
+      "name": "Barracks",
+      "cost": 90,
+      "district": "DISTRICT_ENCAMPMENT"
+    },
+    {
+      "id": "BUILDING_GRANARY",
+      "name": "Granary",
+      "cost": 65,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_LIBRARY",
+      "name": "Library",
+      "cost": 90,
+      "district": "DISTRICT_CAMPUS"
+    },
+    {
+      "id": "BUILDING_SHRINE",
+      "name": "Shrine",
+      "cost": 70,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_WALLS",
+      "name": "Walls",
+      "cost": 80,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_WATER_MILL",
+      "name": "Water Mill",
+      "cost": 80,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_ARENA",
+      "name": "Arena",
+      "cost": 150,
+      "district": "DISTRICT_ENTERTAINMENT_COMPLEX"
+    },
+    {
+      "id": "BUILDING_LIGHTHOUSE",
+      "name": "Lighthouse",
+      "cost": 120,
+      "district": "DISTRICT_HARBOR"
+    },
+    {
+      "id": "BUILDING_MARKET",
+      "name": "Market",
+      "cost": 120,
+      "district": "DISTRICT_COMMERCIAL_HUB"
+    },
+    {
+      "id": "BUILDING_STABLE",
+      "name": "Stable",
+      "cost": 120,
+      "district": "DISTRICT_ENCAMPMENT"
+    },
+    {
+      "id": "BUILDING_TEMPLE",
+      "name": "Temple",
+      "cost": 120,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_STAVE_CHURCH",
+      "name": "Stave Church",
+      "cost": 120,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_AMPHITHEATER",
+      "name": "Amphitheater",
+      "cost": 150,
+      "district": "DISTRICT_THEATER"
+    },
+    {
+      "id": "BUILDING_CASTLE",
+      "name": "Castle",
+      "cost": 225,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_UNIVERSITY",
+      "name": "University",
+      "cost": 250,
+      "district": "DISTRICT_CAMPUS"
+    },
+    {
+      "id": "BUILDING_MADRASA",
+      "name": "Madrasa",
+      "cost": 250,
+      "district": "DISTRICT_CAMPUS"
+    },
+    {
+      "id": "BUILDING_WORKSHOP",
+      "name": "Workshop",
+      "cost": 195,
+      "district": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    {
+      "id": "BUILDING_ARMORY",
+      "name": "Armory",
+      "cost": 195,
+      "district": "DISTRICT_ENCAMPMENT"
+    },
+    {
+      "id": "BUILDING_SHIPYARD",
+      "name": "Shipyard",
+      "cost": 290,
+      "district": "DISTRICT_HARBOR"
+    },
+    {
+      "id": "BUILDING_BANK",
+      "name": "Bank",
+      "cost": 290,
+      "district": "DISTRICT_COMMERCIAL_HUB"
+    },
+    {
+      "id": "BUILDING_STAR_FORT",
+      "name": "Star Fort",
+      "cost": 305,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_MUSEUM_ART",
+      "name": "Museum Art",
+      "cost": 290,
+      "district": "DISTRICT_THEATER"
+    },
+    {
+      "id": "BUILDING_MUSEUM_ARTIFACT",
+      "name": "Museum Artifact",
+      "cost": 290,
+      "district": "DISTRICT_THEATER"
+    },
+    {
+      "id": "BUILDING_FACTORY",
+      "name": "Factory",
+      "cost": 390,
+      "district": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    {
+      "id": "BUILDING_ELECTRONICS_FACTORY",
+      "name": "Electronics Factory",
+      "cost": 390,
+      "district": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    {
+      "id": "BUILDING_STOCK_EXCHANGE",
+      "name": "Stock Exchange",
+      "cost": 390,
+      "district": "DISTRICT_COMMERCIAL_HUB"
+    },
+    {
+      "id": "BUILDING_MILITARY_ACADEMY",
+      "name": "Military Academy",
+      "cost": 390,
+      "district": "DISTRICT_ENCAMPMENT"
+    },
+    {
+      "id": "BUILDING_SEWER",
+      "name": "Sewer",
+      "cost": 200,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_ZOO",
+      "name": "Zoo",
+      "cost": 445,
+      "district": "DISTRICT_ENTERTAINMENT_COMPLEX"
+    },
+    {
+      "id": "BUILDING_HANGAR",
+      "name": "Hangar",
+      "cost": 465,
+      "district": "DISTRICT_AERODROME"
+    },
+    {
+      "id": "BUILDING_SEAPORT",
+      "name": "Seaport",
+      "cost": 580,
+      "district": "DISTRICT_HARBOR"
+    },
+    {
+      "id": "BUILDING_POWER_PLANT",
+      "name": "Power Plant",
+      "cost": 580,
+      "district": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    {
+      "id": "BUILDING_BROADCAST_CENTER",
+      "name": "Broadcast Center",
+      "cost": 580,
+      "district": "DISTRICT_THEATER"
+    },
+    {
+      "id": "BUILDING_FILM_STUDIO",
+      "name": "Film Studio",
+      "cost": 580,
+      "district": "DISTRICT_THEATER"
+    },
+    {
+      "id": "BUILDING_RESEARCH_LAB",
+      "name": "Research Lab",
+      "cost": 580,
+      "district": "DISTRICT_CAMPUS"
+    },
+    {
+      "id": "BUILDING_AIRPORT",
+      "name": "Airport",
+      "cost": 600,
+      "district": "DISTRICT_AERODROME"
+    },
+    {
+      "id": "BUILDING_STADIUM",
+      "name": "Stadium",
+      "cost": 660,
+      "district": "DISTRICT_ENTERTAINMENT_COMPLEX"
+    },
+    {
+      "id": "BUILDING_CATHEDRAL",
+      "name": "Cathedral",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_GURDWARA",
+      "name": "Gurdwara",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_MEETING_HOUSE",
+      "name": "Meeting House",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_MOSQUE",
+      "name": "Mosque",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_PAGODA",
+      "name": "Pagoda",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_SYNAGOGUE",
+      "name": "Synagogue",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_WAT",
+      "name": "Wat",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_STUPA",
+      "name": "Stupa",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_DAR_E_MEHR",
+      "name": "Dar E Mehr",
+      "cost": 190,
+      "district": "DISTRICT_HOLY_SITE"
+    },
+    {
+      "id": "BUILDING_STONEHENGE",
+      "name": "Stonehenge",
+      "cost": 180,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_HANGING_GARDENS",
+      "name": "Hanging Gardens",
+      "cost": 180,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_PYRAMIDS",
+      "name": "Pyramids",
+      "cost": 220,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_ORACLE",
+      "name": "Oracle",
+      "cost": 290,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_GREAT_LIGHTHOUSE",
+      "name": "Great Lighthouse",
+      "cost": 290,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_COLOSSUS",
+      "name": "Colossus",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_PETRA",
+      "name": "Petra",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_COLOSSEUM",
+      "name": "Colosseum",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_GREAT_LIBRARY",
+      "name": "Great Library",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_MAHABODHI_TEMPLE",
+      "name": "Mahabodhi Temple",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_TERRACOTTA_ARMY",
+      "name": "Terracotta Army",
+      "cost": 400,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_HAGIA_SOPHIA",
+      "name": "Hagia Sophia",
+      "cost": 710,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_ALHAMBRA",
+      "name": "Alhambra",
+      "cost": 710,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_CHICHEN_ITZA",
+      "name": "Chichen Itza",
+      "cost": 710,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_MONT_ST_MICHEL",
+      "name": "Mont St Michel",
+      "cost": 710,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_VENETIAN_ARSENAL",
+      "name": "Venetian Arsenal",
+      "cost": 920,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_GREAT_ZIMBABWE",
+      "name": "Great Zimbabwe",
+      "cost": 920,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_FORBIDDEN_CITY",
+      "name": "Forbidden City",
+      "cost": 920,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_RUHR_VALLEY",
+      "name": "Ruhr Valley",
+      "cost": 1240,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_BOLSHOI_THEATRE",
+      "name": "Bolshoi Theatre",
+      "cost": 1240,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_OXFORD_UNIVERSITY",
+      "name": "Oxford University",
+      "cost": 1240,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_BIG_BEN",
+      "name": "Big Ben",
+      "cost": 1450,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_HERMITAGE",
+      "name": "Hermitage",
+      "cost": 1450,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_EIFFEL_TOWER",
+      "name": "Eiffel Tower",
+      "cost": 1620,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_BROADWAY",
+      "name": "Broadway",
+      "cost": 1620,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_CRISTO_REDENTOR",
+      "name": "Cristo Redentor",
+      "cost": 1620,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_ESTADIO_DO_MARACANA",
+      "name": "Estadio Do Maracana",
+      "cost": 1740,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_SYDNEY_OPERA_HOUSE",
+      "name": "Sydney Opera House",
+      "cost": 1850,
+      "district": "DISTRICT_CITY_CENTER"
+    },
+    {
+      "id": "BUILDING_SMALL_ROCKET",
+      "name": "Small Rocket",
+      "cost": 1,
+      "district": "DISTRICT_SPACEPORT"
+    },
+    {
+      "id": "BUILDING_MEDIUM_ROCKET",
+      "name": "Medium Rocket",
+      "cost": 1,
+      "district": "DISTRICT_SPACEPORT"
+    },
+    {
+      "id": "BUILDING_LARGE_ROCKET",
+      "name": "Large Rocket",
+      "cost": 1,
+      "district": "DISTRICT_SPACEPORT"
+    }
+  ],
   "terrains": [
     {
       "id": "TERRAIN_GRASS",

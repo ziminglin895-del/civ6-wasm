@@ -1,4 +1,6 @@
 // Civilization VI WASM/Web-Native Multiplayer & Standalone Network Manager
+// Fully integrated with Civ 6 official game assets, 68 technologies, leader diplomacy & orchestral BGM
+
 class Civ6NetworkManager {
   constructor(engine) {
     this.engine = engine;
@@ -7,10 +9,11 @@ class Civ6NetworkManager {
     // Parse URL params
     const params = new URLSearchParams(window.location.search);
     this.roomId = params.get("room") || "1001";
-    document.getElementById("room-id-display").innerText = `#${this.roomId}`;
+    const roomEl = document.getElementById("room-id-display");
+    if (roomEl) roomEl.innerText = `#${this.roomId}`;
 
-    // Force solo mode if param exists
-    this.forceSolo = params.get("mode") === "solo";
+    // Force solo mode if param exists or running on static hosting (e.g. GitHub Pages)
+    this.forceSolo = params.get("mode") === "solo" || window.location.hostname.endsWith("github.io");
 
     // Player Identity
     let storedId = localStorage.getItem("civ6_player_id");
@@ -41,7 +44,7 @@ class Civ6NetworkManager {
     const wsPort = 8089;
     const wsUrl = `ws://${wsHost}:${wsPort}`;
 
-    console.log("Connecting to Civ6 Relay:", wsUrl);
+    console.log("Connecting to Civ6 Gateway:", wsUrl);
 
     let connectionTimeout = setTimeout(() => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
@@ -55,7 +58,7 @@ class Civ6NetworkManager {
 
       this.ws.onopen = () => {
         clearTimeout(connectionTimeout);
-        this.appendChat("system", "已连接至局域网/Radmin 联机对战中继服务！");
+        this.appendChat("system", "🌐 已连接至文明6局域网/Radmin 联机对战中继网关！");
         this.ws.send(JSON.stringify({
           type: "JOIN_ROOM",
           room_id: this.roomId,
@@ -117,31 +120,42 @@ class Civ6NetworkManager {
 
   updateHUD(state) {
     if (!state) return;
-    document.getElementById("turn-display").innerText = `第 ${state.turn} 回合`;
+    const turnEl = document.getElementById("turn-display");
+    if (turnEl) turnEl.innerText = `第 ${state.turn} 回合`;
 
     const me = state.players.find(p => p.id === this.playerId || p.id === "player_haige");
     if (me) {
-      document.getElementById("gold-display").innerText = me.gold;
-      document.getElementById("science-display").innerText = `+${me.science}`;
-      document.getElementById("current-tech-name").innerText = me.current_tech;
+      const goldEl = document.getElementById("gold-display");
+      if (goldEl) goldEl.innerText = me.gold;
+
+      const sciEl = document.getElementById("science-display");
+      if (sciEl) sciEl.innerText = me.science.toFixed(1);
+
+      const culEl = document.getElementById("culture-display");
+      if (culEl) culEl.innerText = (me.culture || 2).toFixed(1);
+
+      const faithEl = document.getElementById("faith-display");
+      if (faithEl) faithEl.innerText = (me.faith || 1).toFixed(1);
+
+      const techEl = document.getElementById("current-tech-name");
+      if (techEl) techEl.innerText = me.current_tech;
+
+      const techProgressEl = document.getElementById("tech-progress-bar");
+      if (techProgressEl && me.tech_cost) {
+        const pct = Math.min(100, Math.round((me.tech_progress / me.tech_cost) * 100));
+        techProgressEl.style.width = `${pct}%`;
+      }
     }
 
     // Update readiness pill
     const readinessHud = document.getElementById("readiness-hud");
-    readinessHud.innerHTML = state.players.map(p => `
-      <span class="player-dot ${p.is_ready ? 'ready' : ''}">
-        ${p.name}: ${p.is_ready ? '已就绪' : '思考中...'}
-      </span>
-    `).join("");
-
-    // Update Player list
-    const playerList = document.getElementById("player-list");
-    playerList.innerHTML = state.players.map(p => `
-      <div style="padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px;">
-        <span style="color: ${p.color}; font-weight: bold;">●</span> ${p.name}
-        <span style="float: right; color: #dfbe74;">💰 ${p.gold}</span>
-      </div>
-    `).join("");
+    if (readinessHud) {
+      readinessHud.innerHTML = state.players.map(p => `
+        <span class="player-dot ${p.is_ready ? 'ready' : ''}">
+          ${p.name}: ${p.is_ready ? '就绪' : '决策中'}
+        </span>
+      `).join("");
+    }
   }
 
   sendMoveUnit(unitId, q, r) {
@@ -189,7 +203,13 @@ class Civ6NetworkManager {
     if (this.engine.isStandalone) {
       this.appendChat("豪哥", text, new Date().toLocaleTimeString());
       setTimeout(() => {
-        this.appendChat("AI 凯撒", "罗马随时准备与你展开贸易协定！", new Date().toLocaleTimeString());
+        const responses = [
+          "罗马愿与大秦共同捍卫大陆和平！",
+          "埃及尼罗河的商队已备足香料，愿与你开展贸易协定！",
+          "为了世界的永恒和平，请务必克制军队扩张！"
+        ];
+        const randomResp = responses[Math.floor(Math.random() * responses.length)];
+        this.appendChat("AI 领袖信使", randomResp, new Date().toLocaleTimeString());
       }, 1000);
       return;
     }
@@ -204,6 +224,7 @@ class Civ6NetworkManager {
 
   appendChat(sender, text, timeStr) {
     const container = document.getElementById("chat-messages");
+    if (!container) return;
     const div = document.createElement("div");
     if (sender === "system") {
       div.className = "chat-system";
@@ -217,55 +238,273 @@ class Civ6NetworkManager {
   }
 
   initUI() {
-    // End Turn Button
-    document.getElementById("btn-end-turn").addEventListener("click", () => {
-      this.sendEndTurn();
+    // 1. End Turn Button
+    const endTurnBtn = document.getElementById("btn-end-turn");
+    if (endTurnBtn) {
+      endTurnBtn.addEventListener("click", () => this.sendEndTurn());
+    }
+
+    // 2. Found City Button
+    const foundBtn = document.getElementById("btn-found-city");
+    if (foundBtn) {
+      foundBtn.addEventListener("click", () => {
+        if (this.engine.selectedUnit) {
+          this.sendFoundCity(this.engine.selectedUnit.id);
+        }
+      });
+    }
+
+    // 3. Unit Skip Button
+    const skipBtn = document.getElementById("btn-unit-skip");
+    if (skipBtn) {
+      skipBtn.addEventListener("click", () => {
+        if (this.engine.selectedUnit) {
+          this.engine.selectedUnit.moves = 0;
+          this.engine.updateUnitCard(this.engine.selectedUnit);
+          this.appendChat("system", `🛑 单位【${this.engine.selectedUnit.name}】已原地休整防守。`);
+        }
+      });
+    }
+
+    // 4. Unit Delete Button
+    const delBtn = document.getElementById("btn-unit-delete");
+    if (delBtn) {
+      delBtn.addEventListener("click", () => {
+        if (this.engine.selectedUnit && confirm(`确定要解散单位【${this.engine.selectedUnit.name}】并回收军费吗？`)) {
+          const idx = this.engine.gameState.units.findIndex(u => u.id === this.engine.selectedUnit.id);
+          if (idx !== -1) {
+            this.engine.gameState.units.splice(idx, 1);
+            this.engine.selectedUnit = null;
+            document.getElementById("unit-card").style.display = "none";
+            const me = this.engine.gameState.players.find(p => p.id === this.engine.myPlayerId);
+            if (me) me.gold += 20;
+            this.updateHUD(this.engine.gameState);
+            this.appendChat("system", "🗑️ 单位已解散，回收 20 国库金币。");
+          }
+        }
+      });
+    }
+
+    // 5. Audio Toggle
+    const musicBtn = document.getElementById("btn-toggle-music");
+    const audioEl = document.getElementById("civ6-audio");
+    if (musicBtn && audioEl) {
+      musicBtn.addEventListener("click", () => {
+        if (audioEl.paused) {
+          audioEl.play().then(() => {
+            musicBtn.innerHTML = `<span>🔊</span> 原版交响乐 (播放中)`;
+            this.appendChat("system", "🎵 正在播放文明6官方管弦交响原声大碟《Ancient Era》！");
+          }).catch(err => {
+            console.warn("Audio autoplay blocked:", err);
+          });
+        } else {
+          audioEl.pause();
+          musicBtn.innerHTML = `<span>🔇</span> 原版原声 (已静音)`;
+        }
+      });
+    }
+
+    // 6. City Production Modal Controls
+    const cityModal = document.getElementById("city-modal");
+    const closeCityBtn = document.getElementById("btn-close-city");
+    if (closeCityBtn && cityModal) {
+      closeCityBtn.addEventListener("click", () => {
+        cityModal.style.display = "none";
+      });
+    }
+
+    document.querySelectorAll(".prod-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const buildTarget = item.getAttribute("data-build");
+        if (this.engine.selectedCity) {
+          this.engine.localSetCityProduction(this.engine.selectedCity.id, buildTarget);
+        } else if (this.engine.gameState && this.engine.gameState.cities.length > 0) {
+          const myCity = this.engine.gameState.cities.find(c => c.owner === this.engine.myPlayerId);
+          if (myCity) {
+            this.engine.localSetCityProduction(myCity.id, buildTarget);
+          }
+        }
+      });
     });
 
-    // Found City Button
-    document.getElementById("btn-found-city").addEventListener("click", () => {
-      if (this.engine.selectedUnit) {
-        this.sendFoundCity(this.engine.selectedUnit.id);
-        document.getElementById("unit-card").style.display = "none";
+    // 7. Tech Tree Modal Controls
+    const techModal = document.getElementById("tech-modal");
+    const cardActiveTech = document.getElementById("card-active-tech");
+    const closeTechBtn = document.getElementById("btn-close-tech");
+    const techContainer = document.getElementById("tech-tree-container");
+
+    const renderTechTree = () => {
+      if (!techContainer) return;
+      const bundle = window.CIV6_BOOT_BUNDLE;
+      if (!bundle || !bundle.technologies) return;
+
+      const me = this.engine.gameState ? this.engine.gameState.players.find(p => p.id === this.engine.myPlayerId) : null;
+      const currentTech = me ? me.current_tech : "陶艺 (Pottery)";
+      const completedTechs = (me && me.completed_techs) || [];
+
+      techContainer.innerHTML = bundle.technologies.map(t => {
+        const isCurrent = currentTech.includes(t.name);
+        const isDone = completedTechs.some(done => done.includes(t.name));
+        return `
+          <div class="tech-item-card ${isDone ? 'completed' : ''}" data-tech="${t.name} (${t.id})">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <b style="color: ${isCurrent ? '#00d2ff' : (isDone ? '#2ecc71' : '#dfbe74')}; font-size:12px;">${t.name}</b>
+              <span style="font-size:10px; color:#8899ac;">${t.era}</span>
+            </div>
+            <div style="font-size:11px; color:#cbd5e1;">🔬 研发消耗: ${t.cost} 科技值</div>
+            <div style="font-size:10px; color:${isDone ? '#2ecc71' : (isCurrent ? '#00d2ff' : '#8899ac')}; margin-top:4px;">
+              ${isDone ? '✔ 已掌握' : (isCurrent ? '⚡ 正在研发中...' : '点击选定研发')}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      techContainer.querySelectorAll(".tech-item-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const techName = card.getAttribute("data-tech");
+          if (me) {
+            me.current_tech = techName;
+            me.tech_progress = 0;
+            const found = bundle.technologies.find(item => techName.includes(item.name));
+            me.tech_cost = found ? found.cost : 50;
+            this.updateHUD(this.engine.gameState);
+            this.appendChat("system", `🔬 帝国已调整科技攻坚研发方向：【${techName}】！`);
+            renderTechTree();
+          }
+        });
+      });
+    };
+
+    if (cardActiveTech && techModal) {
+      cardActiveTech.addEventListener("click", () => {
+        renderTechTree();
+        techModal.style.display = "flex";
+      });
+    }
+
+    if (closeTechBtn && techModal) {
+      closeTechBtn.addEventListener("click", () => {
+        techModal.style.display = "none";
+      });
+    }
+
+    // 8. Diplomacy Modal Controls
+    const diploModal = document.getElementById("diplo-modal");
+    const diploPortrait = document.getElementById("diplo-portrait");
+    const diploTitle = document.getElementById("diplo-leader-title");
+    const diploText = document.getElementById("diplo-text");
+    const closeDiploBtn = document.getElementById("btn-close-diplo");
+
+    const leadersData = {
+      "TRAJAN": {
+        name: "图拉真 (罗马帝国)",
+        img: "./assets/arx/Civ_LEADER_TRAJAN.png",
+        quote: "“罗马军团的威名响彻整个已知世界。条条大路通罗马，我们愿同大秦签署互不侵犯友好协约与通商道路！”"
+      },
+      "CLEOPATRA": {
+        name: "克利奥帕特拉 (埃及)",
+        img: "./assets/arx/Civ_LEADER_CLEOPATRA.png",
+        quote: "“尼罗河的洪水滋养着金字塔与方尖碑。大秦雄主，若你拥有强大的军势护佑商队，埃及将永远是你的知心盟友。”"
+      },
+      "GANDHI": {
+        name: "莫罕达斯·甘地 (印度)",
+        img: "./assets/arx/Civ_LEADER_GANDHI.png",
+        quote: "“没有通往和平的路，和平本身就是路。但若有任何人试图践踏印度领土，我们的威慑之力将焚尽来犯之敌。”"
       }
-    });
+    };
 
-    // Chat Send
+    const openDiplo = (leaderKey) => {
+      const l = leadersData[leaderKey];
+      if (!l || !diploModal) return;
+      if (diploPortrait) diploPortrait.src = l.img;
+      if (diploTitle) diploTitle.innerText = l.name;
+      if (diploText) diploText.innerText = l.quote;
+      diploModal.style.display = "flex";
+    };
+
+    const entryTrajan = document.getElementById("leader-entry-trajan");
+    if (entryTrajan) entryTrajan.addEventListener("click", () => openDiplo("TRAJAN"));
+
+    const entryCleo = document.getElementById("leader-entry-cleo");
+    if (entryCleo) entryCleo.addEventListener("click", () => openDiplo("CLEOPATRA"));
+
+    const entryGandhi = document.getElementById("leader-entry-gandhi");
+    if (entryGandhi) entryGandhi.addEventListener("click", () => openDiplo("GANDHI"));
+
+    if (closeDiploBtn && diploModal) {
+      closeDiploBtn.addEventListener("click", () => {
+        diploModal.style.display = "none";
+      });
+    }
+
+    const btnDiploFriend = document.getElementById("btn-diplo-friend");
+    if (btnDiploFriend) {
+      btnDiploFriend.addEventListener("click", () => {
+        this.appendChat("system", "🤝 外交盛事：你与领袖达成了【宣布友好】宣言！边境开放，两国商路繁荣！");
+        if (diploModal) diploModal.style.display = "none";
+      });
+    }
+
+    const btnDiploTrade = document.getElementById("btn-diplo-trade");
+    if (btnDiploTrade) {
+      btnDiploTrade.addEventListener("click", () => {
+        const me = this.engine.gameState ? this.engine.gameState.players.find(p => p.id === this.engine.myPlayerId) : null;
+        if (me) {
+          me.gold += 30;
+          this.updateHUD(this.engine.gameState);
+        }
+        this.appendChat("system", "🪙 丝绸之路贸易协定签订成功！双方互通关税，国库入账 +30 金币！");
+        if (diploModal) diploModal.style.display = "none";
+      });
+    }
+
+    const btnDiploWar = document.getElementById("btn-diplo-war");
+    if (btnDiploWar) {
+      btnDiploWar.addEventListener("click", () => {
+        this.appendChat("system", "⚔️ 【正式宣战】你已向对方宣战！战鼓雷鸣，全军进入紧急战备状态！");
+        if (diploModal) diploModal.style.display = "none";
+      });
+    }
+
+    // 9. Chat Send
     const chatInput = document.getElementById("chat-input");
     const btnSend = document.getElementById("btn-send-chat");
     const doSend = () => {
-      this.sendChat(chatInput.value);
-      chatInput.value = "";
-    };
-    btnSend.addEventListener("click", doSend);
-    chatInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doSend();
-    });
-
-    // Copy Invite Link
-    document.getElementById("btn-copy-invite").addEventListener("click", async () => {
-      try {
-        const res = await fetch("/api/status");
-        const data = await res.json();
-        const radmin = (data.network && data.network.radmin_vpn) || (data.network && data.network.wifi_lan) || window.location.hostname;
-        const inviteUrl = `http://${radmin}:8088/?room=${this.roomId}&from=invite`;
-        await navigator.clipboard.writeText(inviteUrl);
-        alert(`已复制开黑链接到剪贴板！\n${inviteUrl}\n\n朋友在异地电脑或手机浏览器打开即可秒玩！`);
-      } catch (err) {
-        const fallbackUrl = `${window.location.origin}/?room=${this.roomId}&from=invite`;
-        navigator.clipboard.writeText(fallbackUrl);
-        alert(`已复制开黑链接:\n${fallbackUrl}`);
+      if (chatInput) {
+        this.sendChat(chatInput.value);
+        chatInput.value = "";
       }
-    });
+    };
+    if (btnSend) btnSend.addEventListener("click", doSend);
+    if (chatInput) {
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doSend();
+      });
+    }
 
-    // Drawer Tabs
+    // 10. Copy Invite Link
+    const copyBtn = document.getElementById("btn-copy-invite");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", async () => {
+        const shareUrl = window.location.href.split("?")[0] + `?room=${this.roomId}&from=invite`;
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          alert(`已复制开箱即玩链接到剪贴板！\n${shareUrl}\n\n无论是手机浏览器还是电脑浏览器，直接打开即可联机开玩！`);
+        } catch (err) {
+          prompt("请手动复制链接分享给好友：", shareUrl);
+        }
+      });
+    }
+
+    // 11. Drawer Tabs
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
         btn.classList.add("active");
         const tabId = btn.getAttribute("data-tab");
-        document.getElementById(`tab-${tabId}`).classList.add("active");
+        const targetTab = document.getElementById(`tab-${tabId}`);
+        if (targetTab) targetTab.classList.add("active");
       });
     });
   }

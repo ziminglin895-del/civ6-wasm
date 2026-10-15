@@ -123,11 +123,57 @@ class Civ6REAExtractor:
                     })
         return civs
 
+    def extract_districts(self) -> List[Dict[str, Any]]:
+        p = os.path.join(self.data_dir, "Districts.xml")
+        if not os.path.exists(p):
+            return []
+        tree = ET.parse(p)
+        root = tree.getroot()
+        districts = []
+        table = root.find("Districts")
+        if table is not None:
+            for row in table.findall("Row"):
+                dtype = row.attrib.get("DistrictType")
+                cost = int(row.attrib.get("Cost", "54"))
+                name = row.attrib.get("Name", dtype)
+                if dtype and "WONDER" not in dtype:
+                    districts.append({
+                        "id": dtype,
+                        "name": name.replace("LOC_DISTRICT_", "").replace("_NAME", "").title().replace("_", " "),
+                        "cost": cost
+                    })
+        return districts
+
+    def extract_buildings(self) -> List[Dict[str, Any]]:
+        p = os.path.join(self.data_dir, "Buildings.xml")
+        if not os.path.exists(p):
+            return []
+        tree = ET.parse(p)
+        root = tree.getroot()
+        buildings = []
+        table = root.find("Buildings")
+        if table is not None:
+            for row in table.findall("Row"):
+                btype = row.attrib.get("BuildingType")
+                cost = int(row.attrib.get("Cost", "65"))
+                prereq_district = row.attrib.get("PrereqDistrict", "DISTRICT_CITY_CENTER")
+                name = row.attrib.get("Name", btype)
+                if btype and "PALACE" not in btype:
+                    buildings.append({
+                        "id": btype,
+                        "name": name.replace("LOC_BUILDING_", "").replace("_NAME", "").title().replace("_", " "),
+                        "cost": cost,
+                        "district": prereq_district
+                    })
+        return buildings
+
     def build_boot_bundle(self) -> Dict[str, Any]:
         techs = self.extract_technologies()
         civics = self.extract_civics()
         units = self.extract_units()
         civs = self.extract_civilizations()
+        districts = self.extract_districts()
+        buildings = self.extract_buildings()
 
         bundle = {
             "version": "1.0.0-wasm",
@@ -137,6 +183,8 @@ class Civ6REAExtractor:
             "civics": civics,
             "units": units,
             "civilizations": civs,
+            "districts": districts,
+            "buildings": buildings,
             "terrains": [
                 {"id": "TERRAIN_GRASS", "name": "草原 (Grassland)", "yield": {"food": 2, "prod": 0, "gold": 0}, "color": "#4caf50"},
                 {"id": "TERRAIN_PLAINS", "name": "平原 (Plains)", "yield": {"food": 1, "prod": 1, "gold": 0}, "color": "#8bc34a"},
