@@ -1,6 +1,6 @@
-// Civilization VI WASM/Web-Native Client Engine
-// High-DPI 60FPS 3D Isometric Hex Map Engine with 3-State Fog of War, Procedural Audio, Combat & Minimap
-// Authentic Sid Meier's Civilization VI Experience
+// Civilization VI WASM/Web-Native 3D WebGL Engine
+// True 3D Perspective Camera, PBR Shading, Dynamic Shadows, 3D Hex Geometry, Procedural Miniatures & Orbit Controls
+// Authentic Sid Meier's Civilization VI Full 3D Experience
 
 class Civ6AudioEngine {
   constructor() {
@@ -39,7 +39,6 @@ class Civ6AudioEngine {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
 
-    // Metal clank
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = "triangle";
@@ -52,7 +51,6 @@ class Civ6AudioEngine {
     osc.start(now);
     osc.stop(now + 0.18);
 
-    // Drum thump
     const thump = this.ctx.createOscillator();
     const thumpGain = this.ctx.createGain();
     thump.type = "sine";
@@ -70,7 +68,7 @@ class Civ6AudioEngine {
     this.ensureContext();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+    const notes = [261.63, 329.63, 392.00, 523.25];
     notes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -89,7 +87,7 @@ class Civ6AudioEngine {
     this.ensureContext();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    const notes = [392.00, 440.00, 523.25, 659.25, 783.99]; // G4, A4, C5, E5, G5
+    const notes = [392.00, 440.00, 523.25, 659.25, 783.99];
     notes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -108,7 +106,6 @@ class Civ6AudioEngine {
     this.ensureContext();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    // Deep timpani roll
     const timpani = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     timpani.type = "sine";
@@ -126,12 +123,9 @@ class Civ6AudioEngine {
 class Civ6Engine {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
-    this.ctx = this.canvas.getContext("2d");
     this.audio = new Civ6AudioEngine();
 
-    this.hexRadius = 48;
-    this.panX = 260;
-    this.panY = 180;
+    this.hexRadius = 14;
     this.scale = 1.0;
     this.gameState = null;
     this.myPlayerId = "player_haige";
@@ -140,75 +134,139 @@ class Civ6Engine {
     this.hoveredHex = null;
     this.showYields = true;
     this.isStandalone = true;
-
-    this.isDragging = false;
-    this.dragStart = { x: 0, y: 0 };
-    this.hasDragged = false;
     this.animTime = 0;
-    this.damageFloats = []; // { x, y, text, life, maxLife }
 
-    // Palette calibrated against Civilization VI terrain palettes
-    this.terrainColors = {
-      "TERRAIN_GRASS": { top1: "#347928", top2: "#2d6a22", wall: "#1b4314", name: "草原" },
-      "TERRAIN_PLAINS": { top1: "#7e883b", top2: "#68722b", wall: "#464d1c", name: "平原" },
-      "TERRAIN_DESERT": { top1: "#c99a3e", top2: "#b5872f", wall: "#7e5a1b", name: "沙漠" },
-      "TERRAIN_TUNDRA": { top1: "#6d7f8d", top2: "#5b6b77", wall: "#3d4850", name: "冻土" },
-      "TERRAIN_OCEAN": { top1: "#1b4f72", top2: "#154360", wall: "#0e2d42", name: "深海" },
-      "TERRAIN_MOUNTAIN": { top1: "#5d6d7e", top2: "#4a5764", wall: "#2c3e50", name: "崇山峻岭" }
+    // 3D Scene Objects
+    this.tileMeshes = new Map(); // key `${q},${r}` -> Group/Mesh
+    this.unitMeshes = new Map(); // unit.id -> Group
+    this.cityMeshes = new Map(); // city.id -> Group
+    this.cloudMeshes = new Map(); // key `${q},${r}` -> Mesh
+    this.damageFloats = [];
+
+    // Colors matching Civilization VI PBR Palette
+    this.materials = {
+      "TERRAIN_GRASS": new THREE.MeshStandardMaterial({ color: 0x3d7e2f, roughness: 0.8, metalness: 0.1 }),
+      "TERRAIN_PLAINS": new THREE.MeshStandardMaterial({ color: 0x828e35, roughness: 0.85, metalness: 0.05 }),
+      "TERRAIN_DESERT": new THREE.MeshStandardMaterial({ color: 0xd4ab3a, roughness: 0.9, metalness: 0.0 }),
+      "TERRAIN_TUNDRA": new THREE.MeshStandardMaterial({ color: 0x768793, roughness: 0.7, metalness: 0.15 }),
+      "TERRAIN_OCEAN": new THREE.MeshStandardMaterial({ color: 0x164b73, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.88 }),
+      "TERRAIN_MOUNTAIN": new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.8, metalness: 0.2 }),
+      "FOG_EXPLORED": new THREE.MeshStandardMaterial({ color: 0x5e5239, roughness: 0.9, metalness: 0.05 }),
+      "SNOW": new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.5, metalness: 0.1 }),
+      "WOOD": new THREE.MeshStandardMaterial({ color: 0x5c4033, roughness: 0.9 }),
+      "LEAVES": new THREE.MeshStandardMaterial({ color: 0x24581c, roughness: 0.7 }),
+      "STONE": new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7, metalness: 0.1 }),
+      "GOLD": new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.3, metalness: 0.7 }),
+      "WALL_BORDER": new THREE.MeshBasicMaterial({ color: 0xc6a254, wireframe: false })
     };
 
+    this.initThree();
     this.initEvents();
     this.initMinimap();
-    this.resize();
-    window.addEventListener("resize", () => this.resize());
     this.startRenderLoop();
   }
 
-  resize() {
-    const dpr = window.devicePixelRatio || 1;
+  initThree() {
     const rect = this.canvas.getBoundingClientRect();
-    this.canvas.width = rect.width * dpr;
-    this.canvas.height = rect.height * dpr;
-    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    this.displayWidth = rect.width;
-    this.displayHeight = rect.height;
-  }
+    const width = rect.width || window.innerWidth;
+    const height = rect.height || window.innerHeight;
 
-  initMinimap() {
-    this.minimapCanvas = document.getElementById("minimap-canvas");
-    if (!this.minimapCanvas) return;
-    this.minimapCtx = this.minimapCanvas.getContext("2d");
-
-    this.minimapCanvas.addEventListener("click", (e) => {
-      if (!this.gameState || !this.gameState.map) return;
-      const rect = this.minimapCanvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      const normX = clickX / rect.width;
-      const normY = clickY / rect.height;
-
-      const targetQ = Math.floor(normX * this.gameState.map.width);
-      const targetR = Math.floor(normY * this.gameState.map.height);
-      const targetPixel = this.hexToPixel(targetQ, targetR, 0);
-
-      this.panX = this.displayWidth / 2 - (targetPixel.x - this.panX);
-      this.panY = this.displayHeight / 2 - (targetPixel.y - this.panY);
+    // 1. WebGL Renderer with Shadows & Antialiasing
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
     });
+    this.renderer.setSize(width, height);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // 2. 3D Scene
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x070b12);
+
+    // 3. Perspective 3D Camera at Civ 6 Isometric Angle
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 3000);
+    this.camera.position.set(220, 240, 280);
+
+    // 4. OrbitControls for smooth 360 orbit, tilt, and zoom
+    if (typeof THREE.OrbitControls !== "undefined") {
+      this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.enableDamping = true;
+      this.controls.dampingFactor = 0.06;
+      this.controls.maxPolarAngle = Math.PI / 2.15;
+      this.controls.minDistance = 40;
+      this.controls.maxDistance = 650;
+      this.controls.target.set(220, 0, 140);
+    }
+
+    // 5. Cinematic 3D Lighting
+    const ambientLight = new THREE.AmbientLight(0xdde8f5, 0.65);
+    this.scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.3);
+    sunLight.position.set(160, 280, 180);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 10;
+    sunLight.shadow.camera.far = 800;
+    const d = 300;
+    sunLight.shadow.camera.left = -d;
+    sunLight.shadow.camera.right = d;
+    sunLight.shadow.camera.top = d;
+    sunLight.shadow.camera.bottom = -d;
+    sunLight.shadow.bias = -0.0005;
+    this.scene.add(sunLight);
+
+    const hemiLight = new THREE.HemisphereLight(0x7ec0ee, 0x3d3224, 0.4);
+    this.scene.add(hemiLight);
+
+    // 6. Raycaster for picking 3D Hexes & Units
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    // 7. Dynamic Selection Reticle
+    this.selectionBracket = this.createSelectionRing();
+    this.selectionBracket.visible = false;
+    this.scene.add(this.selectionBracket);
+
+    window.addEventListener("resize", () => this.onResize());
   }
 
-  hexToPixel(q, r, elevation = 0) {
-    const size = this.hexRadius * this.scale;
-    const x = size * (Math.sqrt(3) * q + (Math.sqrt(3) / 2) * r) + this.panX;
-    const y = size * (3 / 2 * r) + this.panY - elevation * (14 * this.scale);
-    return { x, y };
+  createSelectionRing() {
+    const group = new THREE.Group();
+    const ringGeo = new THREE.RingGeometry(this.hexRadius * 0.75, this.hexRadius * 0.85, 32);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    group.add(ring);
+    return group;
   }
 
-  pixelToHex(x, y) {
-    const size = this.hexRadius * this.scale;
-    const px = (x - this.panX) / size;
-    const py = (y - this.panY) / size;
-    const q = (Math.sqrt(3) / 3 * px - 1 / 3 * py);
-    const r = (2 / 3 * py);
+  onResize() {
+    const rect = this.canvas.getBoundingClientRect();
+    const width = rect.width || window.innerWidth;
+    const height = rect.height || window.innerHeight;
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+  }
+
+  hexToWorld3D(q, r, elevation = 0) {
+    const R = this.hexRadius;
+    const x = R * Math.sqrt(3) * (q + r / 2);
+    const z = R * (3 / 2) * r;
+    const y = elevation;
+    return new THREE.Vector3(x, y, z);
+  }
+
+  world3DToHex(worldPos) {
+    const R = this.hexRadius;
+    const q = (Math.sqrt(3) / 3 * worldPos.x - 1 / 3 * worldPos.z) / R;
+    const r = (2 / 3 * worldPos.z) / R;
     return this.hexRound(q, r);
   }
 
@@ -217,16 +275,11 @@ class Civ6Engine {
     let rq = Math.round(q);
     let rr = Math.round(r);
     let rs = Math.round(s);
-
     const qDiff = Math.abs(rq - q);
     const rDiff = Math.abs(rr - r);
     const sDiff = Math.abs(rs - s);
-
-    if (qDiff > rDiff && qDiff > sDiff) {
-      rq = -rr - rs;
-    } else if (rDiff > sDiff) {
-      rr = -rq - rs;
-    }
+    if (qDiff > rDiff && qDiff > sDiff) rq = -rr - rs;
+    else if (rDiff > sDiff) rr = -rq - rs;
     return { q: rq, r: rr };
   }
 
@@ -235,64 +288,39 @@ class Civ6Engine {
   }
 
   initEvents() {
-    // Disable right-click context menu on canvas
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
+    this.canvas.addEventListener("mousemove", (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      this.handleHover();
+    });
+
     this.canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 0) {
-        // Left button: drag or select
-        this.isDragging = true;
-        this.dragStart = { x: e.clientX - this.panX, y: e.clientY - this.panY };
-        this.hasDragged = false;
-      } else if (e.button === 2) {
-        // Right button: direct move or attack command!
-        e.preventDefault();
-        const rect = this.canvas.getBoundingClientRect();
-        this.handleRightClick(e.clientX - rect.left, e.clientY - rect.top);
-      }
+      this.mouseDownPos = { x: e.clientX, y: e.clientY };
     });
 
-    window.addEventListener("mousemove", (e) => {
-      if (this.isDragging) {
-        this.panX = e.clientX - this.dragStart.x;
-        this.panY = e.clientY - this.dragStart.y;
-        this.hasDragged = true;
-      } else {
-        const rect = this.canvas.getBoundingClientRect();
-        const hex = this.pixelToHex(e.clientX - rect.left, e.clientY - rect.top);
-        this.hoveredHex = hex;
-      }
-    });
-
-    window.addEventListener("mouseup", (e) => {
-      if (this.isDragging) {
-        this.isDragging = false;
-        if (!this.hasDragged && e.button === 0) {
-          const rect = this.canvas.getBoundingClientRect();
-          this.handleHexClick(e.clientX - rect.left, e.clientY - rect.top);
+    this.canvas.addEventListener("mouseup", (e) => {
+      if (!this.mouseDownPos) return;
+      const dx = Math.abs(e.clientX - this.mouseDownPos.x);
+      const dy = Math.abs(e.clientY - this.mouseDownPos.y);
+      if (dx < 6 && dy < 6) {
+        if (e.button === 0) {
+          this.handleClick();
+        } else if (e.button === 2) {
+          this.handleRightClick();
         }
       }
     });
 
-    this.canvas.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 1.12 : 0.88;
-      const newScale = Math.max(0.45, Math.min(2.4, this.scale * zoomFactor));
-      const rect = this.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      this.panX = mouseX - (mouseX - this.panX) * (newScale / this.scale);
-      this.panY = mouseY - (mouseY - this.panY) * (newScale / this.scale);
-      this.scale = newScale;
-    }, { passive: false });
-
     // Keyboard controls
     window.addEventListener("keydown", (e) => {
       if (e.target.tagName === "INPUT") return;
-      if (e.key === "w" || e.key === "ArrowUp") this.panY += 40;
-      else if (e.key === "s" || e.key === "ArrowDown") this.panY -= 40;
-      else if (e.key === "a" || e.key === "ArrowLeft") this.panX += 40;
-      else if (e.key === "d" || e.key === "ArrowRight") this.panX -= 40;
+      if (e.key === "w" || e.key === "ArrowUp") this.panCamera(0, -1);
+      else if (e.key === "s" || e.key === "ArrowDown") this.panCamera(0, 1);
+      else if (e.key === "a" || e.key === "ArrowLeft") this.panCamera(-1, 0);
+      else if (e.key === "d" || e.key === "ArrowRight") this.panCamera(1, 0);
       else if (e.key === "y" || e.key === "Y") {
         this.showYields = !this.showYields;
       } else if (e.key === "Enter") {
@@ -306,43 +334,81 @@ class Civ6Engine {
     });
   }
 
-  handleHexClick(screenX, screenY) {
-    if (!this.gameState) return;
-    const { q, r } = this.pixelToHex(screenX, screenY);
-
-    // 1. Check City click
-    const clickedCity = this.gameState.cities.find(c => c.q === q && c.r === r);
-    if (clickedCity) {
-      this.selectedCity = clickedCity;
-      this.openCityModal(clickedCity);
-      return;
+  panCamera(dx, dz) {
+    const step = 20;
+    this.camera.position.x += dx * step;
+    this.camera.position.z += dz * step;
+    if (this.controls) {
+      this.controls.target.x += dx * step;
+      this.controls.target.z += dz * step;
     }
-
-    // 2. Check Unit click (belonging to current player)
-    const clickedUnit = this.gameState.units.find(u => u.q === q && u.r === r && u.owner === this.myPlayerId);
-    if (clickedUnit) {
-      this.selectedUnit = clickedUnit;
-      this.updateUnitCard(clickedUnit);
-      this.audio.playStep();
-      return;
-    }
-
-    // 3. If unit selected, check left click move
-    if (this.selectedUnit) {
-      this.executeUnitAction(this.selectedUnit, q, r);
-      return;
-    }
-
-    // Unselect
-    this.selectedUnit = null;
-    const unitCard = document.getElementById("unit-card");
-    if (unitCard) unitCard.style.display = "none";
   }
 
-  handleRightClick(screenX, screenY) {
-    if (!this.gameState || !this.selectedUnit) return;
-    const { q, r } = this.pixelToHex(screenX, screenY);
-    this.executeUnitAction(this.selectedUnit, q, r);
+  handleHover() {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const meshes = Array.from(this.tileMeshes.values()).map(g => g.children[0]).filter(Boolean);
+    const intersects = this.raycaster.intersectObjects(meshes);
+
+    if (intersects.length > 0) {
+      const topObj = intersects[0].object;
+      const hex = topObj.userData.hex;
+      if (hex) {
+        this.hoveredHex = hex;
+      }
+    }
+  }
+
+  handleClick() {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const meshes = Array.from(this.tileMeshes.values()).map(g => g.children[0]).filter(Boolean);
+    const intersects = this.raycaster.intersectObjects(meshes);
+
+    if (intersects.length > 0) {
+      const hitHex = intersects[0].object.userData.hex;
+      if (!hitHex) return;
+
+      // 1. Check City
+      const clickedCity = this.gameState.cities.find(c => c.q === hitHex.q && c.r === hitHex.r);
+      if (clickedCity) {
+        this.selectedCity = clickedCity;
+        this.openCityModal(clickedCity);
+        return;
+      }
+
+      // 2. Check Unit
+      const clickedUnit = this.gameState.units.find(u => u.q === hitHex.q && u.r === hitHex.r && u.owner === this.myPlayerId);
+      if (clickedUnit) {
+        this.selectedUnit = clickedUnit;
+        this.updateUnitCard(clickedUnit);
+        this.audio.playStep();
+        return;
+      }
+
+      // 3. Move/Attack if unit selected
+      if (this.selectedUnit) {
+        this.executeUnitAction(this.selectedUnit, hitHex.q, hitHex.r);
+        return;
+      }
+
+      // Deselect
+      this.selectedUnit = null;
+      this.selectionBracket.visible = false;
+      const card = document.getElementById("unit-card");
+      if (card) card.style.display = "none";
+    }
+  }
+
+  handleRightClick() {
+    if (!this.selectedUnit) return;
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const meshes = Array.from(this.tileMeshes.values()).map(g => g.children[0]).filter(Boolean);
+    const intersects = this.raycaster.intersectObjects(meshes);
+    if (intersects.length > 0) {
+      const hitHex = intersects[0].object.userData.hex;
+      if (hitHex) {
+        this.executeUnitAction(this.selectedUnit, hitHex.q, hitHex.r);
+      }
+    }
   }
 
   executeUnitAction(unit, targetQ, targetR) {
@@ -358,14 +424,13 @@ class Civ6Engine {
       return;
     }
 
-    // Check if target tile has enemy unit (Combat!)
     const enemyUnit = this.gameState.units.find(u => u.q === targetQ && u.r === targetR && u.owner !== unit.owner);
     if (enemyUnit) {
       this.executeCombat(unit, enemyUnit, tile);
       return;
     }
 
-    // Peaceful move
+    // Move unit
     unit.q = targetQ;
     unit.r = targetR;
     unit.moves -= 1;
@@ -373,19 +438,18 @@ class Civ6Engine {
     this.updateVisibility();
     this.updateUnitCard(unit);
 
-    // Check if stepped on Barbarian Camp
     if (tile.district === "DISTRICT_BARBARIAN_CAMP") {
       tile.district = null;
       const me = this.gameState.players.find(p => p.id === this.myPlayerId);
       if (me) me.gold += 50;
       this.audio.playCityFounded();
-      this.spawnDamageFloat(targetQ, targetR, "+50 金币！");
       if (window.networkManager) {
         window.networkManager.appendChat("system", "🔥 摧毁蛮族前哨营地！收缴 50 国库金币并清剿蛮患！");
         window.networkManager.updateHUD(this.gameState);
       }
     }
 
+    this.rebuildUnits3D();
     if (window.networkManager) {
       window.networkManager.updateHUD(this.gameState);
     }
@@ -398,7 +462,6 @@ class Civ6Engine {
     const attackerCS = attacker.combat || 20;
     const defenderCS = defender.combat || 20;
 
-    // Civ 6 Authentic Logarithmic Combat Formula
     const baseDamage = 30 * Math.exp((attackerCS - defenderCS) * 0.04);
     const dealt = Math.min(100, Math.round(baseDamage * (0.8 + Math.random() * 0.4)));
     const counterBase = 30 * Math.exp((defenderCS - attackerCS) * 0.04);
@@ -407,10 +470,7 @@ class Civ6Engine {
     defender.hp = Math.max(0, defender.hp - dealt);
     attacker.hp = Math.max(0, attacker.hp - taken);
 
-    this.spawnDamageFloat(defender.q, defender.r, `-${dealt} HP`);
-
     if (defender.hp <= 0) {
-      // Defender destroyed! Attacker takes tile
       const defIdx = this.gameState.units.indexOf(defender);
       if (defIdx !== -1) this.gameState.units.splice(defIdx, 1);
       attacker.q = tile.q;
@@ -430,7 +490,9 @@ class Civ6Engine {
       const attIdx = this.gameState.units.indexOf(attacker);
       if (attIdx !== -1) this.gameState.units.splice(attIdx, 1);
       this.selectedUnit = null;
-      document.getElementById("unit-card").style.display = "none";
+      this.selectionBracket.visible = false;
+      const card = document.getElementById("unit-card");
+      if (card) card.style.display = "none";
       if (window.networkManager) {
         window.networkManager.appendChat("system", `💀 我方单位【${attacker.name}】在浴血奋战中阵亡！`);
       }
@@ -438,31 +500,17 @@ class Civ6Engine {
       this.updateUnitCard(attacker);
     }
 
+    this.rebuildUnits3D();
     if (window.networkManager) {
       window.networkManager.updateHUD(this.gameState);
     }
   }
 
-  spawnDamageFloat(q, r, text) {
-    const { x, y } = this.hexToPixel(q, r, 1);
-    this.damageFloats.push({
-      x: x,
-      y: y - 20,
-      text: text,
-      life: 60,
-      maxLife: 60
-    });
-  }
-
   updateVisibility() {
     if (!this.gameState || !this.gameState.map) return;
-
-    // Reset visibility
     for (const t of this.gameState.map.tiles) {
       t.visible = false;
     }
-
-    // Units vision (radius 2)
     for (const u of this.gameState.units) {
       if (u.owner === this.myPlayerId) {
         for (const t of this.gameState.map.tiles) {
@@ -473,8 +521,6 @@ class Civ6Engine {
         }
       }
     }
-
-    // Cities vision (radius 3)
     for (const c of this.gameState.cities) {
       if (c.owner === this.myPlayerId) {
         for (const t of this.gameState.map.tiles) {
@@ -485,32 +531,242 @@ class Civ6Engine {
         }
       }
     }
+    this.updateFogOfWar3D();
   }
 
-  openCityModal(city) {
-    const modal = document.getElementById("city-modal");
-    const titleEl = document.getElementById("city-modal-title");
-    if (modal && titleEl) {
-      const owner = this.gameState.players.find(p => p.id === city.owner);
-      const ownerName = owner ? owner.name : "未知文明";
-      titleEl.innerText = `${city.name} · 人口: ${city.population} · 隶属: ${ownerName}`;
-      modal.style.display = "flex";
+  updateFogOfWar3D() {
+    for (const tile of this.gameState.map.tiles) {
+      const key = `${tile.q},${tile.r}`;
+      const group = this.tileMeshes.get(key);
+      const cloud = this.cloudMeshes.get(key);
+      if (!group) continue;
+
+      if (!tile.explored) {
+        group.visible = false;
+        if (cloud) cloud.visible = true;
+      } else {
+        group.visible = true;
+        if (cloud) cloud.visible = false;
+
+        // Apply sepia/dim material if explored but out of sight
+        const topMesh = group.children[0];
+        if (topMesh && topMesh.material) {
+          topMesh.material = tile.visible ? (this.materials[tile.terrain] || this.materials["TERRAIN_GRASS"]) : this.materials["FOG_EXPLORED"];
+        }
+      }
     }
   }
 
-  updateUnitCard(unit) {
-    const card = document.getElementById("unit-card");
-    if (!card) return;
-    const nameEl = document.getElementById("selected-unit-name");
-    const movesEl = document.getElementById("selected-unit-moves");
-    const foundBtn = document.getElementById("btn-found-city");
+  // ==========================================
+  // 3D Procedural Map Generation & Meshes
+  // ==========================================
+  buildMap3D() {
+    // Clear previous meshes
+    this.tileMeshes.forEach(g => this.scene.remove(g));
+    this.tileMeshes.clear();
+    this.cloudMeshes.forEach(c => this.scene.remove(c));
+    this.cloudMeshes.clear();
 
-    card.style.display = "block";
-    if (nameEl) nameEl.innerText = `${unit.name} (${unit.hp || 100} HP)`;
-    if (movesEl) movesEl.innerText = `移动力: ${unit.moves}/${unit.max_moves}`;
+    const R = this.hexRadius;
+    const hexCylinderGeo = new THREE.CylinderGeometry(R, R, 5, 6);
 
-    if (foundBtn) {
-      foundBtn.style.display = (unit.type === "UNIT_SETTLER") ? "inline-block" : "none";
+    for (const tile of this.gameState.map.tiles) {
+      const key = `${tile.q},${tile.r}`;
+      const group = new THREE.Group();
+      const pos = this.hexToWorld3D(tile.q, tile.r, 0);
+
+      let height = 5;
+      let elevationY = 2.5;
+      let mat = this.materials[tile.terrain] || this.materials["TERRAIN_GRASS"];
+
+      if (tile.terrain === "TERRAIN_OCEAN") {
+        height = 2;
+        elevationY = 0;
+      } else if (tile.terrain === "TERRAIN_MOUNTAIN") {
+        height = 14;
+        elevationY = 7;
+      } else if (tile.isHill) {
+        height = 7;
+        elevationY = 3.5;
+      }
+
+      const geo = new THREE.CylinderGeometry(R, R, height, 6);
+      const hexMesh = new THREE.Mesh(geo, mat);
+      hexMesh.position.set(0, elevationY, 0);
+      hexMesh.receiveShadow = true;
+      hexMesh.castShadow = tile.terrain !== "TERRAIN_OCEAN";
+      hexMesh.userData = { hex: tile };
+      group.add(hexMesh);
+
+      // Mountain Snowcap Cone
+      if (tile.terrain === "TERRAIN_MOUNTAIN") {
+        const peakGeo = new THREE.ConeGeometry(R * 0.75, 12, 6);
+        const peakMesh = new THREE.Mesh(peakGeo, this.materials["SNOW"]);
+        peakMesh.position.set(0, height + 5, 0);
+        peakMesh.castShadow = true;
+        group.add(peakMesh);
+      }
+
+      // Trees on Grasslands/Plains
+      if ((tile.terrain === "TERRAIN_GRASS" || tile.terrain === "TERRAIN_PLAINS") && !tile.isHill) {
+        const treeCount = Math.floor(Math.random() * 3) + 2;
+        for (let i = 0; i < treeCount; i++) {
+          const treeGroup = new THREE.Group();
+          const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 3, 5), this.materials["WOOD"]);
+          trunk.position.y = 1.5;
+          trunk.castShadow = true;
+          treeGroup.add(trunk);
+
+          const foliage = new THREE.Mesh(new THREE.DodecahedronGeometry(1.8, 1), this.materials["LEAVES"]);
+          foliage.position.y = 3.5;
+          foliage.castShadow = true;
+          treeGroup.add(foliage);
+
+          const angle = Math.random() * Math.PI * 2;
+          const rad = Math.random() * (R * 0.45);
+          treeGroup.position.set(Math.cos(angle) * rad, height, Math.sin(angle) * rad);
+          group.add(treeGroup);
+        }
+      }
+
+      // Barbarian Camp Tent
+      if (tile.district === "DISTRICT_BARBARIAN_CAMP") {
+        const tent = new THREE.Mesh(new THREE.ConeGeometry(4, 5, 5), new THREE.MeshStandardMaterial({ color: 0x8b0000 }));
+        tent.position.set(0, height + 2.5, 0);
+        tent.castShadow = true;
+        group.add(tent);
+      }
+
+      group.position.set(pos.x, 0, pos.z);
+      this.scene.add(group);
+      this.tileMeshes.set(key, group);
+
+      // Cloud dome for unexplored fog of war
+      const cloudGeo = new THREE.DodecahedronGeometry(R * 1.1, 1);
+      const cloudMat = new THREE.MeshStandardMaterial({ color: 0xd8cbb0, roughness: 0.9, transparent: true, opacity: 0.85 });
+      const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+      cloud.position.set(pos.x, 8, pos.z);
+      this.scene.add(cloud);
+      this.cloudMeshes.set(key, cloud);
+    }
+
+    this.updateFogOfWar3D();
+  }
+
+  rebuildCities3D() {
+    this.cityMeshes.forEach(m => this.scene.remove(m));
+    this.cityMeshes.clear();
+
+    for (const city of this.gameState.cities) {
+      const tile = this.gameState.map.tiles.find(t => t.q === city.q && t.r === city.r);
+      if (!tile || !tile.explored) continue;
+
+      const pos = this.hexToWorld3D(city.q, city.r, 0);
+      const elevation = tile.terrain === "TERRAIN_MOUNTAIN" ? 14 : (tile.isHill ? 7 : 5);
+
+      const cityGroup = new THREE.Group();
+
+      // Stone Wall Keep
+      const keep = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6, 6, 8), this.materials["STONE"]);
+      keep.position.y = elevation + 3;
+      keep.castShadow = true;
+      cityGroup.add(keep);
+
+      // 4 Corner Towers with roofs
+      const towerOffsets = [[-3.5, -3.5], [3.5, -3.5], [-3.5, 3.5], [3.5, 3.5]];
+      const isMine = city.owner === this.myPlayerId;
+      const roofMat = new THREE.MeshStandardMaterial({ color: isMine ? 0xb71c1c : 0x4a148c });
+
+      for (const [tx, tz] of towerOffsets) {
+        const tower = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 8, 6), this.materials["STONE"]);
+        tower.position.set(tx, elevation + 4, tz);
+        tower.castShadow = true;
+        cityGroup.add(tower);
+
+        const roof = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3, 6), roofMat);
+        roof.position.set(tx, elevation + 9.5, tz);
+        roof.castShadow = true;
+        cityGroup.add(roof);
+      }
+
+      cityGroup.position.set(pos.x, 0, pos.z);
+      this.scene.add(cityGroup);
+      this.cityMeshes.set(city.id, cityGroup);
+    }
+  }
+
+  rebuildUnits3D() {
+    this.unitMeshes.forEach(m => this.scene.remove(m));
+    this.unitMeshes.clear();
+
+    for (const unit of this.gameState.units) {
+      const tile = this.gameState.map.tiles.find(t => t.q === unit.q && t.r === unit.r);
+      if (!tile) continue;
+      if (unit.owner !== this.myPlayerId && !tile.visible) continue;
+
+      const pos = this.hexToWorld3D(unit.q, unit.r, 0);
+      const elevation = tile.terrain === "TERRAIN_MOUNTAIN" ? 14 : (tile.isHill ? 7 : 5);
+
+      const unitGroup = new THREE.Group();
+
+      // Miniature Pedestal
+      const owner = this.gameState.players.find(p => p.id === unit.owner);
+      const ownerHex = owner ? parseInt(owner.color.replace("#", "0x")) : 0xe74c3c;
+      const baseMat = new THREE.MeshStandardMaterial({ color: ownerHex, roughness: 0.4, metalness: 0.5 });
+
+      const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.8, 1.2, 16), baseMat);
+      pedestal.position.y = elevation + 0.6;
+      pedestal.castShadow = true;
+      unitGroup.add(pedestal);
+
+      // Golden Rim Ring
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(3.6, 0.35, 8, 24), this.materials["GOLD"]);
+      rim.position.y = elevation + 1.2;
+      rim.rotation.x = Math.PI / 2;
+      unitGroup.add(rim);
+
+      // Miniature Figure Body
+      let figurine;
+      if (unit.type === "UNIT_SETTLER") {
+        // Covered Wagon model
+        figurine = new THREE.Group();
+        const cart = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 4), this.materials["WOOD"]);
+        cart.position.y = elevation + 2.2;
+        figurine.add(cart);
+        const canopy = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 4, 8, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ color: 0xeeeeee }));
+        canopy.rotation.z = Math.PI / 2;
+        canopy.rotation.y = Math.PI / 2;
+        canopy.position.y = elevation + 3.2;
+        figurine.add(canopy);
+      } else {
+        // Warrior figurine with shield and sword
+        figurine = new THREE.Group();
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.5, 3.5, 8), this.materials["STONE"]);
+        body.position.y = elevation + 2.8;
+        body.castShadow = true;
+        figurine.add(body);
+
+        const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), this.materials["GOLD"]);
+        head.position.y = elevation + 5.0;
+        head.castShadow = true;
+        figurine.add(head);
+
+        const shield = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.2, 1.6), baseMat);
+        shield.position.set(-1.6, elevation + 3.2, 0);
+        figurine.add(shield);
+
+        const sword = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.5, 0.4), this.materials["GOLD"]);
+        sword.position.set(1.5, elevation + 3.8, 0.5);
+        sword.rotation.z = -0.3;
+        figurine.add(sword);
+      }
+
+      unitGroup.add(figurine);
+      unitGroup.position.set(pos.x, 0, pos.z);
+      unitGroup.userData = { unit: unit, baseElevation: elevation };
+
+      this.scene.add(unitGroup);
+      this.unitMeshes.set(unit.id, unitGroup);
     }
   }
 
@@ -528,36 +784,29 @@ class Civ6Engine {
     for (let q = 0; q < w; q++) {
       for (let r = 0; r < h; r++) {
         let terrain = "TERRAIN_GRASS";
-        let elevation = 1;
         let isHill = false;
         let resource = null;
 
         if (q <= 1 || q >= w - 2 || r <= 1 || r >= h - 2) {
           terrain = "TERRAIN_OCEAN";
-          elevation = 0;
           if (Math.random() < 0.2) resource = "🐟 鱼群";
         } else {
           const rand = Math.random();
           if (rand < 0.35) {
             terrain = "TERRAIN_GRASS";
-            elevation = 1;
             if (Math.random() < 0.25) resource = "🌾 丰饶麦田";
             if (Math.random() < 0.15) resource = "🐴 野马群";
           } else if (rand < 0.65) {
             terrain = "TERRAIN_PLAINS";
-            elevation = 1;
             if (Math.random() < 0.2) isHill = true;
             if (Math.random() < 0.2) resource = "⛏️ 铜矿";
           } else if (rand < 0.78) {
             terrain = "TERRAIN_DESERT";
-            elevation = 1;
             if (Math.random() < 0.15) resource = "🧣 丝绸商路";
           } else if (rand < 0.88) {
             terrain = "TERRAIN_MOUNTAIN";
-            elevation = 3;
           } else {
             terrain = "TERRAIN_TUNDRA";
-            elevation = 1;
             if (Math.random() < 0.15) resource = "💎 稀世水钻";
           }
         }
@@ -566,7 +815,6 @@ class Civ6Engine {
           q: q,
           r: r,
           terrain: terrain,
-          elevation: elevation,
           isHill: isHill,
           resource: resource,
           district: null,
@@ -582,7 +830,6 @@ class Civ6Engine {
       }
     }
 
-    // Set 2 Barbarian Outposts
     const camp1 = tiles.find(t => t.q === 10 && t.r === 3 && t.terrain !== "TERRAIN_OCEAN");
     if (camp1) camp1.district = "DISTRICT_BARBARIAN_CAMP";
     const camp2 = tiles.find(t => t.q === 8 && t.r === 11 && t.terrain !== "TERRAIN_OCEAN");
@@ -659,16 +906,19 @@ class Civ6Engine {
         { id: "u_rome_settler", owner: "player_ai_rome", type: "UNIT_SETTLER", name: "罗马移民队", q: 16, r: 8, moves: 2, max_moves: 2, hp: 100, combat: 0 },
         { id: "u_rome_legion", owner: "player_ai_rome", type: "UNIT_WARRIOR", name: "罗马军团步兵", q: 15, r: 8, moves: 2, max_moves: 2, hp: 100, combat: 20 },
         { id: "u_barb_1", owner: "player_ai_barbarian", type: "UNIT_WARRIOR", name: "蛮族勇士", q: 10, r: 4, moves: 2, max_moves: 2, hp: 100, combat: 20 },
-        { id: "u_barb_2", owner: "player_ai_barbarian", type: "UNIT_WARRIOR", name: "蛮族枪兵", q: 8, r: 10, moves: 2, max_moves: 2, hp: 100, combat: 20 }
+        { id: "u_barb_2", owner: "player_ai_barbarian", type: "UNIT_WARRIOR", name: "蛮族长矛兵", q: 8, r: 10, moves: 2, max_moves: 2, hp: 100, combat: 20 }
       ],
       cities: []
     };
 
+    this.buildMap3D();
     this.updateVisibility();
+    this.rebuildCities3D();
+    this.rebuildUnits3D();
 
     if (window.networkManager) {
       window.networkManager.updateHUD(this.gameState);
-      window.networkManager.appendChat("system", "🏛️ 【文明6 战争迷雾与 4X 引擎】战局已建立！请派遣勇士探索未知大陆，驱散战争迷雾，建立第一座首府！");
+      window.networkManager.appendChat("system", "🌐 【文明6 3D WebGL 引擎已启动】全视角 3D 摄像机与物理阴影就绪！右键旋转、滚轮缩放、右键指挥行军！");
     }
   }
 
@@ -702,7 +952,6 @@ class Civ6Engine {
     };
     this.gameState.cities.push(city);
 
-    // Territory claim
     const neighbors = [
       { q: unit.q, r: unit.r },
       { q: unit.q + 1, r: unit.r },
@@ -722,14 +971,17 @@ class Civ6Engine {
 
     this.gameState.units.splice(unitIndex, 1);
     this.selectedUnit = null;
+    this.selectionBracket.visible = false;
     const unitCard = document.getElementById("unit-card");
     if (unitCard) unitCard.style.display = "none";
 
     this.audio.playCityFounded();
     this.updateVisibility();
+    this.rebuildCities3D();
+    this.rebuildUnits3D();
 
     if (window.networkManager) {
-      window.networkManager.appendChat("system", `🏛️ 宏伟城市【${cityName}】已奠基！领土边界向四周开拓！`);
+      window.networkManager.appendChat("system", `🏛️ 宏伟城市【${cityName}】奠基！领土边界扩展！`);
       window.networkManager.updateHUD(this.gameState);
     }
   }
@@ -739,16 +991,9 @@ class Civ6Engine {
     if (!city) return;
 
     const costs = {
-      "UNIT_WARRIOR": 40,
-      "UNIT_SLINGER": 35,
-      "UNIT_SETTLER": 80,
-      "UNIT_BUILDER": 50,
-      "BUILDING_MONUMENT": 60,
-      "BUILDING_GRANARY": 65,
-      "BUILDING_WATER_MILL": 80,
-      "DISTRICT_CAMPUS": 54,
-      "DISTRICT_HOLY_SITE": 54,
-      "DISTRICT_COMMERCIAL_HUB": 54
+      "UNIT_WARRIOR": 40, "UNIT_SLINGER": 35, "UNIT_SETTLER": 80, "UNIT_BUILDER": 50,
+      "BUILDING_MONUMENT": 60, "BUILDING_GRANARY": 65, "BUILDING_WATER_MILL": 80,
+      "DISTRICT_CAMPUS": 54, "DISTRICT_HOLY_SITE": 54, "DISTRICT_COMMERCIAL_HUB": 54
     };
 
     city.production_current = buildTarget;
@@ -756,7 +1001,7 @@ class Civ6Engine {
     city.production_cost = costs[buildTarget] || 50;
 
     if (window.networkManager) {
-      window.networkManager.appendChat("system", `⚙️ 【${city.name}】已调整当前生产目标为：${buildTarget} (需求: ${city.production_cost} 锤)`);
+      window.networkManager.appendChat("system", `⚙️ 【${city.name}】调整生产目标：${buildTarget} (需求: ${city.production_cost} 锤)`);
     }
 
     const cityModal = document.getElementById("city-modal");
@@ -767,12 +1012,10 @@ class Civ6Engine {
     this.gameState.turn += 1;
     this.audio.playTurnAdvance();
 
-    // 1. Refresh movement
     for (const u of this.gameState.units) {
       u.moves = u.max_moves;
     }
 
-    // 2. City Production accumulation
     for (const city of this.gameState.cities) {
       const prodPerTurn = 4 + (city.population * 2);
       city.production_progress += prodPerTurn;
@@ -803,26 +1046,13 @@ class Civ6Engine {
             combat: target === "UNIT_WARRIOR" ? 20 : (target === "UNIT_SLINGER" ? 15 : 0)
           };
           this.gameState.units.push(newUnit);
-          this.updateVisibility();
           if (window.networkManager) {
             window.networkManager.appendChat("system", `🛡️ 【${city.name}】成功训练并部署了新单位：${newUnit.name}！`);
-          }
-        } else if (target.startsWith("BUILDING_")) {
-          city.buildings.push(target);
-          if (window.networkManager) {
-            window.networkManager.appendChat("system", `🏛️ 【${city.name}】成功落成建筑：${target}！`);
-          }
-        } else if (target.startsWith("DISTRICT_")) {
-          const tile = this.gameState.map.tiles.find(t => t.q === city.q && t.r === city.r);
-          if (tile) tile.district = target;
-          if (window.networkManager) {
-            window.networkManager.appendChat("system", `📐 【${city.name}】规划的专业区域【${target}】已落成！`);
           }
         }
       }
     }
 
-    // 3. Accumulate Player yields
     const me = this.gameState.players.find(p => p.id === this.myPlayerId);
     if (me) {
       me.gold += 5;
@@ -831,7 +1061,6 @@ class Civ6Engine {
       me.culture += 2;
       me.civic_progress += 2;
 
-      // Check tech completed
       if (me.tech_progress >= me.tech_cost) {
         me.completed_techs.push(me.current_tech);
         this.triggerBreakthrough("TECH", me.current_tech);
@@ -840,7 +1069,6 @@ class Civ6Engine {
         me.tech_cost = 50;
       }
 
-      // Check civic completed
       if (me.civic_progress >= me.civic_cost) {
         me.completed_civics = me.completed_civics || [];
         me.completed_civics.push(me.current_civic);
@@ -851,15 +1079,13 @@ class Civ6Engine {
       }
     }
 
-    // 4. AI Turns
+    // AI movement
     for (const player of this.gameState.players) {
       if (player.id === this.myPlayerId) continue;
-
       const aiSettler = this.gameState.units.find(u => u.owner === player.id && u.type === "UNIT_SETTLER");
       if (aiSettler) {
         this.localFoundCity(aiSettler.id);
       }
-
       const aiWarriors = this.gameState.units.filter(u => u.owner === player.id && u.type === "UNIT_WARRIOR");
       for (const w of aiWarriors) {
         const dq = Math.floor(Math.random() * 3) - 1;
@@ -878,6 +1104,8 @@ class Civ6Engine {
     }
 
     this.updateVisibility();
+    this.rebuildCities3D();
+    this.rebuildUnits3D();
 
     if (window.networkManager) {
       window.networkManager.appendChat("system", `⚡ 全球回合交割完成：第 ${this.gameState.turn} 回合开始！各文明科技树与城邦产出已入账！`);
@@ -920,453 +1148,65 @@ class Civ6Engine {
     modal.style.display = "block";
   }
 
-  startRenderLoop() {
-    const render = (time) => {
-      this.animTime = time * 0.002;
-      this.draw();
-      this.drawMinimap();
-      requestAnimationFrame(render);
-    };
-    requestAnimationFrame(render);
+  openCityModal(city) {
+    const modal = document.getElementById("city-modal");
+    const titleEl = document.getElementById("city-modal-title");
+    if (modal && titleEl) {
+      const owner = this.gameState.players.find(p => p.id === city.owner);
+      const ownerName = owner ? owner.name : "未知文明";
+      titleEl.innerText = `${city.name} · 人口: ${city.population} · 隶属: ${ownerName}`;
+      modal.style.display = "flex";
+    }
   }
 
-  // ==========================================
-  // Isometric 3D Hex Shading & Render Pipeline
-  // ==========================================
-  draw() {
-    const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.displayWidth, this.displayHeight);
+  updateUnitCard(unit) {
+    const card = document.getElementById("unit-card");
+    if (!card) return;
+    const nameEl = document.getElementById("selected-unit-name");
+    const movesEl = document.getElementById("selected-unit-moves");
+    const foundBtn = document.getElementById("btn-found-city");
 
-    if (!this.gameState || !this.gameState.map) {
-      ctx.fillStyle = "#dfbe74";
-      ctx.font = "bold 16px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("正在载入文明6原版地图与高精 3D 渲染管线...", this.displayWidth / 2, this.displayHeight / 2);
-      return;
+    card.style.display = "block";
+    if (nameEl) nameEl.innerText = `${unit.name} (${unit.hp || 100} HP)`;
+    if (movesEl) movesEl.innerText = `移动力: ${unit.moves}/${unit.max_moves}`;
+
+    if (foundBtn) {
+      foundBtn.style.display = (unit.type === "UNIT_SETTLER") ? "inline-block" : "none";
     }
 
-    // 1. Sort tiles by row/elevation
-    const sortedTiles = [...this.gameState.map.tiles].sort((a, b) => {
-      if (a.r !== b.r) return a.r - b.r;
-      return a.elevation - b.elevation;
-    });
-
-    // 2. Draw Hex Columns
-    for (const tile of sortedTiles) {
-      this.draw3DHexTile(tile);
-    }
-
-    // 3. Draw Territory Borders (only visible or explored)
-    this.drawBorders();
-
-    // 4. Draw Districts & Cities
-    for (const city of this.gameState.cities) {
-      const tile = this.gameState.map.tiles.find(t => t.q === city.q && t.r === city.r);
-      if (!tile || !tile.explored) continue;
-      const elevation = tile.elevation || 1;
-      const { x, y } = this.hexToPixel(city.q, city.r, elevation);
-      this.draw3DCity(x, y, city, tile.visible);
-    }
-
-    // 5. Draw Units (ONLY if tile is currently VISIBLE in line of sight)
-    for (const unit of this.gameState.units) {
+    // Update selection bracket position
+    if (this.selectionBracket) {
       const tile = this.gameState.map.tiles.find(t => t.q === unit.q && t.r === unit.r);
-      if (!tile) continue;
-      // Friendly units always visible; foreign units ONLY visible if tile.visible!
-      if (unit.owner !== this.myPlayerId && !tile.visible) continue;
-
-      const elevation = tile.elevation || 1;
-      const { x, y } = this.hexToPixel(unit.q, unit.r, elevation);
-      const isSelected = this.selectedUnit && this.selectedUnit.id === unit.id;
-      this.draw3DUnit(x, y, unit, isSelected);
+      const elevation = tile && tile.terrain === "TERRAIN_MOUNTAIN" ? 14 : (tile && tile.isHill ? 7 : 5);
+      const pos = this.hexToWorld3D(unit.q, unit.r, elevation + 0.2);
+      this.selectionBracket.position.set(pos.x, pos.y, pos.z);
+      this.selectionBracket.visible = true;
     }
+  }
 
-    // 6. Draw Hover Reticle
-    if (this.hoveredHex) {
-      const hoverTile = this.gameState.map.tiles.find(t => t.q === this.hoveredHex.q && t.r === this.hoveredHex.r);
-      if (hoverTile && hoverTile.explored) {
-        const { x, y } = this.hexToPixel(hoverTile.q, hoverTile.r, hoverTile.elevation);
-        this.drawHexPolygon(x, y, this.hexRadius * this.scale, "rgba(223, 190, 116, 0.3)", "#f0cf7e", 2);
+  initMinimap() {
+    this.minimapCanvas = document.getElementById("minimap-canvas");
+    if (!this.minimapCanvas) return;
+    this.minimapCtx = this.minimapCanvas.getContext("2d");
+
+    this.minimapCanvas.addEventListener("click", (e) => {
+      if (!this.gameState || !this.gameState.map) return;
+      const rect = this.minimapCanvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      const normX = clickX / rect.width;
+      const normY = clickY / rect.height;
+
+      const targetQ = Math.floor(normX * this.gameState.map.width);
+      const targetR = Math.floor(normY * this.gameState.map.height);
+      const worldPos = this.hexToWorld3D(targetQ, targetR, 0);
+
+      this.camera.position.x = worldPos.x;
+      this.camera.position.z = worldPos.z + 120;
+      if (this.controls) {
+        this.controls.target.set(worldPos.x, 0, worldPos.z);
       }
-    }
-
-    // 7. Draw Floating Combat Damage Numbers
-    for (let i = this.damageFloats.length - 1; i >= 0; i--) {
-      const d = this.damageFloats[i];
-      d.y -= 0.6;
-      d.life -= 1;
-      const alpha = d.life / d.maxLife;
-
-      ctx.save();
-      ctx.fillStyle = `rgba(231, 76, 60, ${alpha})`;
-      ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
-      ctx.lineWidth = 3;
-      ctx.font = `bold ${Math.max(14, 16 * this.scale)}px sans-serif`;
-      ctx.textAlign = "center";
-      ctx.strokeText(d.text, d.x, d.y);
-      ctx.fillText(d.text, d.x, d.y);
-      ctx.restore();
-
-      if (d.life <= 0) {
-        this.damageFloats.splice(i, 1);
-      }
-    }
-  }
-
-  draw3DHexTile(tile) {
-    const ctx = this.ctx;
-    const elevation = tile.elevation || 1;
-    const size = this.hexRadius * this.scale;
-    const { x, y } = this.hexToPixel(tile.q, tile.r, elevation);
-
-    // ==========================================
-    // 3-State Fog of War (Authentic Civ 6)
-    // ==========================================
-    if (!tile.explored) {
-      // STATE 0: Unexplored (Vintage Cartographic Parchment)
-      this.drawParchmentUnexploredHex(x, y, size, tile.q, tile.r);
-      return;
-    }
-
-    const isFogged = !tile.visible; // STATE 1: Explored but out of sight (Sepia Fog of War)
-    const pal = this.terrainColors[tile.terrain] || this.terrainColors["TERRAIN_GRASS"];
-
-    // A. Extruded 3D walls
-    if (elevation > 0 && tile.terrain !== "TERRAIN_OCEAN") {
-      const wallHeight = elevation * (14 * this.scale);
-      const wallColor = isFogged ? "#5a4d38" : pal.wall;
-      this.drawExtrudedWalls(x, y, size, wallHeight, wallColor);
-    }
-
-    // B. Top Hex Face
-    const grad = ctx.createLinearGradient(x - size, y - size, x + size, y + size);
-    if (isFogged) {
-      // Sepia pen-and-ink parchment wash
-      grad.addColorStop(0, "#7d6e4d");
-      grad.addColorStop(1, "#5f5338");
-    } else {
-      grad.addColorStop(0, pal.top1);
-      grad.addColorStop(1, pal.top2);
-    }
-
-    this.drawHexPolygon(x, y, size, grad, isFogged ? "rgba(40, 30, 15, 0.6)" : "rgba(10, 15, 22, 0.6)", 1);
-
-    // C. Special Terrain Details
-    if (!isFogged) {
-      if (tile.terrain === "TERRAIN_OCEAN") {
-        ctx.strokeStyle = "rgba(127, 219, 255, 0.28)";
-        ctx.lineWidth = 1.5;
-        const waveOffset = Math.sin(this.animTime + tile.q * 0.8 + tile.r * 0.5) * 4;
-        ctx.beginPath();
-        ctx.arc(x + waveOffset, y - 4, size * 0.35, 0.2 * Math.PI, 0.8 * Math.PI);
-        ctx.stroke();
-      } else if (tile.terrain === "TERRAIN_MOUNTAIN") {
-        this.drawMountainPeak(x, y, size);
-      } else if (tile.terrain === "TERRAIN_GRASS" || tile.terrain === "TERRAIN_PLAINS") {
-        this.drawTreeCluster(x, y, size, tile.terrain === "TERRAIN_GRASS" ? "#1e5118" : "#515a1f");
-      }
-
-      // Barbarian Outpost
-      if (tile.district === "DISTRICT_BARBARIAN_CAMP") {
-        ctx.font = `${Math.max(14, 16 * this.scale)}px sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("🏕️", x, y - 2);
-      }
-
-      // Resource Indicator
-      if (tile.resource) {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
-        ctx.beginPath();
-        ctx.arc(x, y + size * 0.35, 11 * this.scale, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "#dfbe74";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        ctx.font = `${Math.max(10, 11 * this.scale)}px sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(tile.resource.split(" ")[0], x, y + size * 0.35);
-      }
-
-      // Yield Pips Overlay (Food/Production/Gold)
-      if (this.showYields && tile.yield) {
-        this.drawYieldPips(x, y, size, tile.yield);
-      }
-    }
-  }
-
-  drawParchmentUnexploredHex(x, y, size, q, r) {
-    const ctx = this.ctx;
-    // Vintage cartographic paper tone
-    ctx.fillStyle = "#bfab80";
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i + (Math.PI / 6);
-      const px = x + size * Math.cos(angle);
-      const py = y + size * Math.sin(angle);
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(90, 75, 50, 0.35)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Subtle hand-drawn contour hatch line
-    if ((q + r) % 2 === 0) {
-      ctx.beginPath();
-      ctx.moveTo(x - size * 0.3, y - size * 0.2);
-      ctx.lineTo(x + size * 0.3, y + size * 0.2);
-      ctx.strokeStyle = "rgba(70, 55, 35, 0.2)";
-      ctx.stroke();
-    }
-  }
-
-  drawYieldPips(x, y, size, yld) {
-    const ctx = this.ctx;
-    const pipsX = x;
-    const pipsY = y - size * 0.3;
-
-    ctx.font = `${Math.max(9, 10 * this.scale)}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    let yieldStr = "";
-    if (yld.food > 0) yieldStr += `🌾${yld.food} `;
-    if (yld.production > 0) yieldStr += `⚙️${yld.production} `;
-    if (yld.gold > 0) yieldStr += `🪙${yld.gold}`;
-
-    if (yieldStr) {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-      ctx.fillRect(pipsX - 22 * this.scale, pipsY - 6 * this.scale, 44 * this.scale, 12 * this.scale);
-      ctx.fillStyle = "#fff";
-      ctx.fillText(yieldStr.trim(), pipsX, pipsY);
-    }
-  }
-
-  drawHexPolygon(x, y, radius, fillColor, strokeColor, lineWidth) {
-    const ctx = this.ctx;
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i + (Math.PI / 6);
-      const px = x + radius * Math.cos(angle);
-      const py = y + radius * Math.sin(angle);
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    if (fillColor) {
-      ctx.fillStyle = fillColor;
-      ctx.fill();
-    }
-    if (strokeColor) {
-      ctx.strokeStyle = strokeColor;
-      ctx.lineWidth = lineWidth;
-      ctx.stroke();
-    }
-  }
-
-  drawExtrudedWalls(x, y, radius, wallHeight, wallColor) {
-    const ctx = this.ctx;
-    const pts = [];
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i + (Math.PI / 6);
-      pts.push({
-        x: x + radius * Math.cos(angle),
-        y: y + radius * Math.sin(angle)
-      });
-    }
-
-    ctx.fillStyle = wallColor;
-    const frontFaces = [[1, 2], [2, 3], [3, 4]];
-
-    for (const [p1Idx, p2Idx] of frontFaces) {
-      const p1 = pts[p1Idx];
-      const p2 = pts[p2Idx];
-
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.lineTo(p2.x, p2.y + wallHeight);
-      ctx.lineTo(p1.x, p1.y + wallHeight);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-  }
-
-  drawMountainPeak(x, y, size) {
-    const ctx = this.ctx;
-    const peakHeight = 22 * this.scale;
-
-    ctx.beginPath();
-    ctx.moveTo(x - size * 0.45, y + size * 0.2);
-    ctx.lineTo(x, y - peakHeight);
-    ctx.lineTo(x + size * 0.45, y + size * 0.2);
-    ctx.closePath();
-    ctx.fillStyle = "#34495e";
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(x, y - peakHeight);
-    ctx.lineTo(x + size * 0.45, y + size * 0.2);
-    ctx.lineTo(x, y + size * 0.15);
-    ctx.closePath();
-    ctx.fillStyle = "#2c3e50";
-    ctx.fill();
-
-    // Snowcap
-    ctx.beginPath();
-    ctx.moveTo(x - size * 0.18, y - peakHeight * 0.4);
-    ctx.lineTo(x, y - peakHeight);
-    ctx.lineTo(x + size * 0.18, y - peakHeight * 0.4);
-    ctx.lineTo(x, y - peakHeight * 0.3);
-    ctx.closePath();
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-  }
-
-  drawTreeCluster(x, y, size, color) {
-    const ctx = this.ctx;
-    ctx.fillStyle = color;
-    const offsets = [
-      { dx: -size * 0.25, dy: -size * 0.1 },
-      { dx: size * 0.2, dy: -size * 0.2 },
-      { dx: 0, dy: size * 0.15 }
-    ];
-    for (const off of offsets) {
-      ctx.beginPath();
-      ctx.arc(x + off.dx, y + off.dy, 4 * this.scale, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  drawBorders() {
-    const ctx = this.ctx;
-    for (const tile of this.gameState.map.tiles) {
-      if (!tile.owner || !tile.explored) continue;
-      const owner = this.gameState.players.find(p => p.id === tile.owner);
-      const color = owner ? owner.color : "#c6a254";
-
-      const { x, y } = this.hexToPixel(tile.q, tile.r, tile.elevation);
-      this.drawHexPolygon(x, y, this.hexRadius * this.scale * 0.94, null, color, 2.5);
-    }
-  }
-
-  draw3DCity(x, y, city, isVisible) {
-    const ctx = this.ctx;
-    const isMine = city.owner === this.myPlayerId;
-
-    ctx.fillStyle = isVisible ? "rgba(20, 24, 33, 0.92)" : "rgba(45, 38, 28, 0.85)";
-    ctx.strokeStyle = isMine ? "#dfbe74" : "#9b59b6";
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(x, y - 4, 18 * this.scale, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.font = `${Math.max(12, 14 * this.scale)}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("🏛️", x, y - 5);
-
-    // City Banner Plate
-    const bannerW = 92 * this.scale;
-    const bannerH = 18 * this.scale;
-    const bannerX = x - bannerW / 2;
-    const bannerY = y - 32 * this.scale;
-
-    ctx.fillStyle = isVisible ? "rgba(7, 10, 15, 0.92)" : "rgba(35, 28, 18, 0.9)";
-    ctx.beginPath();
-    ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 4 * this.scale);
-    ctx.fill();
-    ctx.strokeStyle = isMine ? "#c6a254" : "#8899ac";
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
-
-    // Population Circle
-    ctx.fillStyle = isMine ? "#e74c3c" : "#8e44ad";
-    ctx.beginPath();
-    ctx.arc(bannerX + 9 * this.scale, bannerY + bannerH / 2, 7 * this.scale, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = `bold ${Math.max(8, 9 * this.scale)}px sans-serif`;
-    ctx.fillText(`${city.population}`, bannerX + 9 * this.scale, bannerY + bannerH / 2);
-
-    // City Name
-    ctx.fillStyle = "#dfbe74";
-    ctx.font = `bold ${Math.max(9, 10 * this.scale)}px sans-serif`;
-    ctx.textAlign = "left";
-    ctx.fillText(city.name.split(" ")[0], bannerX + 20 * this.scale, bannerY + bannerH / 2 + 1);
-  }
-
-  draw3DUnit(x, y, unit, isSelected) {
-    const ctx = this.ctx;
-    const isMine = unit.owner === this.myPlayerId;
-    const owner = this.gameState.players.find(p => p.id === unit.owner);
-    const badgeColor = owner ? owner.color : (isMine ? "#e74c3c" : "#8e44ad");
-
-    if (isSelected) {
-      ctx.beginPath();
-      ctx.arc(x, y - 4, 25 * this.scale, 0, Math.PI * 2);
-      ctx.strokeStyle = "#00d2ff";
-      ctx.lineWidth = 3;
-      ctx.setLineDash([4, 4]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-    }
-
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.beginPath();
-    ctx.ellipse(x, y + 6, 16 * this.scale, 8 * this.scale, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = badgeColor;
-    ctx.beginPath();
-    ctx.arc(x, y - 4, 15 * this.scale, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    let symbol = "⚔️";
-    if (unit.type === "UNIT_SETTLER") symbol = "🏕️";
-    else if (unit.type === "UNIT_SLINGER") symbol = "🏹";
-    else if (unit.type === "UNIT_BUILDER") symbol = "🔨";
-
-    ctx.font = `${Math.max(12, 14 * this.scale)}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(symbol, x, y - 4);
-
-    // Movement pips
-    const pipColor = unit.moves > 0 ? "#2ecc71" : "#e74c3c";
-    ctx.fillStyle = pipColor;
-    ctx.beginPath();
-    ctx.arc(x + 10 * this.scale, y - 12 * this.scale, 3.5 * this.scale, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // HP Mini Bar (if damaged)
-    if (unit.hp && unit.hp < 100) {
-      const barW = 24 * this.scale;
-      const barH = 3 * this.scale;
-      const barX = x - barW / 2;
-      const barY = y + 12 * this.scale;
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-      ctx.fillRect(barX, barY, barW, barH);
-      ctx.fillStyle = unit.hp > 50 ? "#2ecc71" : (unit.hp > 25 ? "#f1c40f" : "#e74c3c");
-      ctx.fillRect(barX, barY, barW * (unit.hp / 100), barH);
-    }
+    });
   }
 
   drawMinimap() {
@@ -1405,7 +1245,6 @@ class Civ6Engine {
       }
     }
 
-    // Draw cities on minimap
     for (const c of this.gameState.cities) {
       const cx = c.q * tileW;
       const cy = c.r * tileH;
@@ -1414,5 +1253,30 @@ class Civ6Engine {
       mctx.arc(cx + tileW / 2, cy + tileH / 2, 2.5, 0, Math.PI * 2);
       mctx.fill();
     }
+  }
+
+  startRenderLoop() {
+    const render = (time) => {
+      this.animTime = time * 0.001;
+
+      if (this.controls) {
+        this.controls.update();
+      }
+
+      // Idle breathing animations for 3D unit figurines
+      this.unitMeshes.forEach((mesh) => {
+        mesh.position.y = Math.sin(this.animTime * 3 + mesh.position.x) * 0.4;
+      });
+
+      // Rotate selection bracket
+      if (this.selectionBracket && this.selectionBracket.visible) {
+        this.selectionBracket.rotation.y = this.animTime * 1.5;
+      }
+
+      this.renderer.render(this.scene, this.camera);
+      this.drawMinimap();
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
   }
 }

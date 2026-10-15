@@ -16,6 +16,8 @@ def test_live_deployment():
         ("/", 200, "Sid Meier's Civilization VI"),
         ("/index.html", 200, "秦始皇"),
         ("/style.css", 200, "Civilization VI Authentic Gold"),
+        ("/three.min.js", 200, "THREE"),
+        ("/OrbitControls.js", 200, "OrbitControls"),
         ("/civ6_boot_bundle.js", 200, "CIV6_BOOT_BUNDLE"),
         ("/civ6_engine.js", 200, "Civ6Engine"),
         ("/civ6_network.js", 200, "Civ6NetworkManager"),
