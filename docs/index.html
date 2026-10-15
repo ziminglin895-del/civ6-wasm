@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Civilization VI · 网页原生多人联机版 (WASM)</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="game-container">
+    <!-- Top HUD Bar -->
+    <header class="hud-top">
+      <div class="hud-left">
+        <span class="game-icon">🏛️</span>
+        <div class="title-group">
+          <h2>文明6 · 网页联机版</h2>
+          <span class="version-tag">WASM 60FPS · 客户端原生渲染</span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div class="room-pill">
+          <span>房间号: <b id="room-id-display">#1001</b></span>
+        </div>
+        <div class="turn-pill">
+          <span class="turn-num" id="turn-display">第 1 回合</span>
+        </div>
+        <div class="yields-pill">
+          <span title="国库金币">💰 <b id="gold-display">50</b></span>
+          <span title="每回合科技值">🧪 <b id="science-display">+4</b></span>
+          <span title="每回合文化值">🏛️ <b id="culture-display">+2</b></span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <button class="invite-btn" id="btn-copy-invite" title="复制链接发给异地对象">
+          <span>🔗 复制对象联机链接</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas Viewport -->
+    <main class="canvas-viewport" id="viewport-container">
+      <canvas id="civ-canvas"></canvas>
+
+      <!-- Unit Control Context Popup -->
+      <div class="unit-card" id="unit-card" style="display: none;">
+        <div class="unit-card-header">
+          <span id="selected-unit-name">开拓者 (Settler)</span>
+          <span class="unit-moves" id="selected-unit-moves">移动力: 2/2</span>
+        </div>
+        <div class="unit-card-actions">
+          <button class="unit-btn primary" id="btn-found-city">🏛️ 建立城市 (Found City)</button>
+          <button class="unit-btn" id="btn-unit-skip">🛑 驻留跳过</button>
+        </div>
+      </div>
+
+      <!-- Quick Turn End Floating Button -->
+      <div class="turn-action-container">
+        <div class="players-readiness-hud" id="readiness-hud">
+          <span class="player-dot ready" id="p1-status">豪哥: 就绪</span>
+          <span class="player-dot" id="p2-status">等待对象就绪...</span>
+        </div>
+        <button class="end-turn-btn" id="btn-end-turn">
+          <span class="end-turn-title">⚡ 结束回合</span>
+          <span class="end-turn-sub">NEXT TURN</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Side Chat & Faction Drawer -->
+    <aside class="side-drawer" id="side-drawer">
+      <div class="drawer-tabs">
+        <button class="tab-btn active" data-tab="chat">💬 战局对讲</button>
+        <button class="tab-btn" data-tab="tech">🧪 科技市政</button>
+        <button class="tab-btn" data-tab="room">👥 房间成员</button>
+      </div>
+
+      <!-- Chat Tab -->
+      <div class="tab-content active" id="tab-chat">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-system">欢迎来到《文明6》网页原生多人联机房间！将顶部链接发送给异地对象即可跨平台开黑！</div>
+        </div>
+        <div class="chat-input-bar">
+          <input type="text" id="chat-input" placeholder="输入聊天内容..." maxlength="100">
+          <button id="btn-send-chat">发送</button>
+        </div>
+      </div>
+
+      <!-- Tech Tab -->
+      <div class="tab-content" id="tab-tech">
+        <div class="tech-card">
+          <h4>当前研发科技:</h4>
+          <div class="tech-title" id="current-tech-name">陶艺 (Pottery)</div>
+          <div class="progress-bar"><div class="progress-fill" id="tech-progress-bar" style="width: 20%;"></div></div>
+        </div>
+        <div class="civic-card">
+          <h4>当前市政方针:</h4>
+          <div class="tech-title" id="current-civic-name">法典 (Code of Laws)</div>
+          <div class="progress-bar"><div class="progress-fill civic" style="width: 35%;"></div></div>
+        </div>
+      </div>
+
+      <!-- Room Tab -->
+      <div class="tab-content" id="tab-room">
+        <div class="player-list" id="player-list"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="./civ6_boot_bundle.js"></script>
+  <script src="./civ6_engine.js"></script>
+  <script src="./civ6_network.js"></script>
+</body>
+</html>
