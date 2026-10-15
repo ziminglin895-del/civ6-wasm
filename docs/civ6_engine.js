@@ -142,27 +142,50 @@ class Civ6Engine {
     this.cityMeshes = new Map(); // city.id -> Group
     this.cloudMeshes = new Map(); // key `${q},${r}` -> Mesh
     this.damageFloats = [];
+    this.loadedModels = {};
 
-    // Colors matching Civilization VI PBR Palette
+    // Authentic Civilization VI PBR Textures
+    const texLoader = new THREE.TextureLoader();
+    const loadTileTex = (name, rep = 2) => {
+      const t = texLoader.load(`./assets/textures/${name}.png`);
+      t.wrapS = THREE.RepeatWrapping;
+      t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(rep, rep);
+      return t;
+    };
+
+    const grassTex = loadTileTex("terrain_grass", 2);
+    const plainsTex = loadTileTex("terrain_plains", 2);
+    const desertTex = loadTileTex("terrain_desert", 2);
+    const tundraTex = loadTileTex("terrain_tundra", 2);
+    const oceanTex = loadTileTex("terrain_ocean", 3);
+    const mountainTex = loadTileTex("terrain_mountain", 1.5);
+    const hillsTex = loadTileTex("terrain_grass_hills", 2);
+    this.oceanTex = oceanTex;
+
+    // Colors & Materials matching Civilization VI PBR Pipeline
     this.materials = {
-      "TERRAIN_GRASS": new THREE.MeshStandardMaterial({ color: 0x3d7e2f, roughness: 0.8, metalness: 0.1 }),
-      "TERRAIN_PLAINS": new THREE.MeshStandardMaterial({ color: 0x828e35, roughness: 0.85, metalness: 0.05 }),
-      "TERRAIN_DESERT": new THREE.MeshStandardMaterial({ color: 0xd4ab3a, roughness: 0.9, metalness: 0.0 }),
-      "TERRAIN_TUNDRA": new THREE.MeshStandardMaterial({ color: 0x768793, roughness: 0.7, metalness: 0.15 }),
-      "TERRAIN_OCEAN": new THREE.MeshStandardMaterial({ color: 0x164b73, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.88 }),
-      "TERRAIN_MOUNTAIN": new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.8, metalness: 0.2 }),
-      "FOG_EXPLORED": new THREE.MeshStandardMaterial({ color: 0x5e5239, roughness: 0.9, metalness: 0.05 }),
-      "SNOW": new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.5, metalness: 0.1 }),
+      "TERRAIN_GRASS": new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.75, metalness: 0.05 }),
+      "TERRAIN_PLAINS": new THREE.MeshStandardMaterial({ map: plainsTex, roughness: 0.8, metalness: 0.05 }),
+      "TERRAIN_DESERT": new THREE.MeshStandardMaterial({ map: desertTex, roughness: 0.9, metalness: 0.0 }),
+      "TERRAIN_TUNDRA": new THREE.MeshStandardMaterial({ map: tundraTex, roughness: 0.7, metalness: 0.1 }),
+      "TERRAIN_OCEAN": new THREE.MeshStandardMaterial({ map: oceanTex, color: 0x1a6fa0, roughness: 0.15, metalness: 0.4, transparent: true, opacity: 0.88 }),
+      "TERRAIN_MOUNTAIN": new THREE.MeshStandardMaterial({ map: mountainTex, roughness: 0.85, metalness: 0.15 }),
+      "TERRAIN_HILLS": new THREE.MeshStandardMaterial({ map: hillsTex, roughness: 0.8, metalness: 0.05 }),
+      "FOG_EXPLORED": new THREE.MeshStandardMaterial({ color: 0x4a4030, roughness: 0.95, metalness: 0.0 }),
+      "SNOW": new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.4, metalness: 0.1 }),
       "WOOD": new THREE.MeshStandardMaterial({ color: 0x5c4033, roughness: 0.9 }),
       "LEAVES": new THREE.MeshStandardMaterial({ color: 0x24581c, roughness: 0.7 }),
       "STONE": new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7, metalness: 0.1 }),
       "GOLD": new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.3, metalness: 0.7 }),
-      "WALL_BORDER": new THREE.MeshBasicMaterial({ color: 0xc6a254, wireframe: false })
+      "WALL_BORDER": new THREE.MeshBasicMaterial({ color: 0xc6a254, wireframe: false }),
+      "RIVER": new THREE.MeshStandardMaterial({ color: 0x2980b9, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.85 })
     };
 
     this.initThree();
     this.initEvents();
     this.initMinimap();
+    this.initGLTFModels();
     this.startRenderLoop();
   }
 
@@ -554,7 +577,205 @@ class Civ6Engine {
           topMesh.material = tile.visible ? (this.materials[tile.terrain] || this.materials["TERRAIN_GRASS"]) : this.materials["FOG_EXPLORED"];
         }
       }
+  initGLTFModels() {
+    this.loadedModels = {};
+    if (typeof THREE.GLTFLoader !== "undefined") {
+      const gltfLoader = new THREE.GLTFLoader();
+      const modelFiles = {
+        "UNIT_WARRIOR": "./assets/models/warrior.gltf",
+        "UNIT_SETTLER": "./assets/models/settler.gltf",
+        "UNIT_ARCHER": "./assets/models/archer.gltf",
+        "UNIT_SCOUT": "./assets/models/scout.gltf",
+        "CITY": "./assets/models/city_building.gltf"
+      };
+
+      for (const [key, path] of Object.entries(modelFiles)) {
+        gltfLoader.load(
+          path,
+          (gltf) => {
+            this.loadedModels[key] = gltf.scene;
+            if (key === "CITY") {
+              this.rebuildCities3D();
+            } else {
+              this.rebuildUnits3D();
+            }
+          },
+          undefined,
+          (err) => {
+            console.warn(`[Civ6 Engine] Model ${key} fallback:`, err);
+          }
+        );
+      }
     }
+  }
+
+  createUnitBanner(unit, owner) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+
+    const ownerColor = (owner && owner.color) || "#e74c3c";
+    const hp = unit.hp !== undefined ? unit.hp : 100;
+    const maxHp = 100;
+    const moves = unit.moves !== undefined ? unit.moves : 2;
+
+    // 1. Health Bar Background
+    ctx.shadowColor = "rgba(0, 0, 0, 0.75)";
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = "rgba(18, 22, 32, 0.92)";
+    ctx.strokeStyle = "#c6a254";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(50, 16, 190, 22, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // 2. Health Bar Fill
+    const hpWidth = Math.max(0, (hp / maxHp) * 184);
+    ctx.fillStyle = hp > 65 ? "#2ecc71" : (hp > 30 ? "#f39c12" : "#e74c3c");
+    ctx.beginPath();
+    ctx.roundRect(53, 19, hpWidth, 16, 4);
+    ctx.fill();
+
+    // 3. Circular Civ Emblem Shield (Outer Gold Ring)
+    ctx.beginPath();
+    ctx.arc(45, 64, 38, 0, Math.PI * 2);
+    ctx.fillStyle = "#c6a254";
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#ffeaa7";
+    ctx.stroke();
+
+    // 4. Inner Civ Colored Disc
+    ctx.beginPath();
+    ctx.arc(45, 64, 32, 0, Math.PI * 2);
+    ctx.fillStyle = ownerColor;
+    ctx.fill();
+
+    // 5. Unit Symbol
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 32px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    let icon = "⚔️";
+    if (unit.type === "UNIT_SETTLER") icon = "🏕️";
+    else if (unit.type === "UNIT_ARCHER") icon = "🏹";
+    else if (unit.type === "UNIT_SCOUT") icon = "🐕";
+    else if (unit.type === "UNIT_BUILDER") icon = "🔨";
+    else if (unit.type === "UNIT_SLINGER") icon = "🎯";
+    ctx.fillText(icon, 45, 64);
+
+    // 6. Unit Name Plaque
+    ctx.fillStyle = "rgba(10, 15, 24, 0.92)";
+    ctx.strokeStyle = "#dfbe74";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(90, 48, 150, 32, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#dfbe74";
+    ctx.font = "bold 15px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(unit.name || "文明单位", 100, 68);
+
+    // 7. Movement Pip Indicator
+    ctx.beginPath();
+    ctx.arc(224, 64, 8, 0, Math.PI * 2);
+    ctx.fillStyle = moves > 0 ? "#2ecc71" : "#7f8c8d";
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+
+    const bannerTex = new THREE.CanvasTexture(canvas);
+    bannerTex.needsUpdate = true;
+    const bannerMat = new THREE.SpriteMaterial({ map: bannerTex, transparent: true, depthTest: false });
+    const sprite = new THREE.Sprite(bannerMat);
+    sprite.scale.set(18, 9, 1);
+    return sprite;
+  }
+
+  createCityBanner(city, owner) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 384;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+
+    const ownerColor = (owner && owner.color) || "#8b0000";
+    const pop = city.population || 1;
+    const defense = 20;
+
+    ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 3;
+
+    // Plaque background
+    ctx.fillStyle = "rgba(12, 18, 28, 0.95)";
+    ctx.strokeStyle = "#c6a254";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(20, 24, 344, 80, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    // Civ colored header stripe
+    ctx.fillStyle = ownerColor;
+    ctx.beginPath();
+    ctx.roundRect(24, 28, 336, 16, [8, 8, 0, 0]);
+    ctx.fill();
+
+    // Population Circle
+    ctx.beginPath();
+    ctx.arc(58, 64, 26, 0, Math.PI * 2);
+    ctx.fillStyle = "#c6a254";
+    ctx.fill();
+    ctx.strokeStyle = "#ffeaa7";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = "#0c121c";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`${pop}`, 58, 64);
+
+    // City Name
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(city.name || "帝国城市", 98, 62);
+
+    // Production Subtitle
+    ctx.fillStyle = "#dfbe74";
+    ctx.font = "14px sans-serif";
+    const prodText = city.currentProduction ? `⚙️ ${city.currentProduction}` : "⚙️ 待选生产项目";
+    ctx.fillText(prodText, 98, 86);
+
+    // Defense Strength Shield
+    ctx.beginPath();
+    ctx.arc(330, 64, 22, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(40, 50, 70, 0.9)";
+    ctx.strokeStyle = "#8899ac";
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(`🛡️${defense}`, 330, 65);
+
+    const cityTex = new THREE.CanvasTexture(canvas);
+    cityTex.needsUpdate = true;
+    const cityMat = new THREE.SpriteMaterial({ map: cityTex, transparent: true, depthTest: false });
+    const sprite = new THREE.Sprite(cityMat);
+    sprite.scale.set(24, 8, 1);
+    return sprite;
   }
 
   // ==========================================
@@ -568,7 +789,6 @@ class Civ6Engine {
     this.cloudMeshes.clear();
 
     const R = this.hexRadius;
-    const hexCylinderGeo = new THREE.CylinderGeometry(R, R, 5, 6);
 
     for (const tile of this.gameState.map.tiles) {
       const key = `${tile.q},${tile.r}`;
@@ -588,6 +808,7 @@ class Civ6Engine {
       } else if (tile.isHill) {
         height = 7;
         elevationY = 3.5;
+        mat = this.materials["TERRAIN_HILLS"] || mat;
       }
 
       const geo = new THREE.CylinderGeometry(R, R, height, 6);
@@ -607,9 +828,9 @@ class Civ6Engine {
         group.add(peakMesh);
       }
 
-      // Trees on Grasslands/Plains
-      if ((tile.terrain === "TERRAIN_GRASS" || tile.terrain === "TERRAIN_PLAINS") && !tile.isHill) {
-        const treeCount = Math.floor(Math.random() * 3) + 2;
+      // Trees on Grasslands/Plains/Forest
+      if ((tile.terrain === "TERRAIN_GRASS" || tile.terrain === "TERRAIN_PLAINS" || tile.feature === "FEATURE_FOREST") && !tile.isHill) {
+        const treeCount = tile.feature === "FEATURE_FOREST" ? 5 : Math.floor(Math.random() * 3) + 2;
         for (let i = 0; i < treeCount; i++) {
           const treeGroup = new THREE.Group();
           const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 3, 5), this.materials["WOOD"]);
@@ -627,6 +848,14 @@ class Civ6Engine {
           treeGroup.position.set(Math.cos(angle) * rad, height, Math.sin(angle) * rad);
           group.add(treeGroup);
         }
+      }
+
+      // River Ribbon Edge Mesh
+      if (tile.hasRiver) {
+        const riverGeo = new THREE.BoxGeometry(R * 0.9, 0.6, 1.8);
+        const riverMesh = new THREE.Mesh(riverGeo, this.materials["RIVER"]);
+        riverMesh.position.set(0, height + 0.3, R * 0.75);
+        group.add(riverMesh);
       }
 
       // Barbarian Camp Tent
@@ -663,33 +892,61 @@ class Civ6Engine {
 
       const pos = this.hexToWorld3D(city.q, city.r, 0);
       const elevation = tile.terrain === "TERRAIN_MOUNTAIN" ? 14 : (tile.isHill ? 7 : 5);
+      const owner = this.gameState.players.find(p => p.id === city.owner);
+      const isMine = city.owner === this.myPlayerId;
 
       const cityGroup = new THREE.Group();
 
-      // Stone Wall Keep
-      const keep = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6, 6, 8), this.materials["STONE"]);
-      keep.position.y = elevation + 3;
-      keep.castShadow = true;
-      cityGroup.add(keep);
-
-      // 4 Corner Towers with roofs
-      const towerOffsets = [[-3.5, -3.5], [3.5, -3.5], [-3.5, 3.5], [3.5, 3.5]];
-      const isMine = city.owner === this.myPlayerId;
-      const roofMat = new THREE.MeshStandardMaterial({ color: isMine ? 0xb71c1c : 0x4a148c });
-
-      for (const [tx, tz] of towerOffsets) {
-        const tower = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 8, 6), this.materials["STONE"]);
-        tower.position.set(tx, elevation + 4, tz);
-        tower.castShadow = true;
-        cityGroup.add(tower);
-
-        const roof = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3, 6), roofMat);
-        roof.position.set(tx, elevation + 9.5, tz);
-        roof.castShadow = true;
-        cityGroup.add(roof);
+      let rendered3DBuilding = false;
+      if (this.loadedModels && this.loadedModels["CITY"]) {
+        try {
+          const bldClone = this.loadedModels["CITY"].clone(true);
+          bldClone.scale.set(1.3, 1.3, 1.3);
+          bldClone.position.set(0, elevation + 0.5, 0);
+          bldClone.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+          cityGroup.add(bldClone);
+          rendered3DBuilding = true;
+        } catch (e) {
+          console.warn("[Civ6 Engine] glTF city fallback:", e);
+        }
       }
 
+      if (!rendered3DBuilding) {
+        // Stone Wall Keep
+        const keep = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6, 6, 8), this.materials["STONE"]);
+        keep.position.y = elevation + 3;
+        keep.castShadow = true;
+        cityGroup.add(keep);
+
+        // 4 Corner Towers with roofs
+        const towerOffsets = [[-3.5, -3.5], [3.5, -3.5], [-3.5, 3.5], [3.5, 3.5]];
+        const roofMat = new THREE.MeshStandardMaterial({ color: isMine ? 0xb71c1c : 0x4a148c });
+
+        for (const [tx, tz] of towerOffsets) {
+          const tower = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 8, 6), this.materials["STONE"]);
+          tower.position.set(tx, elevation + 4, tz);
+          tower.castShadow = true;
+          cityGroup.add(tower);
+
+          const roof = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3, 6), roofMat);
+          roof.position.set(tx, elevation + 9.5, tz);
+          roof.castShadow = true;
+          cityGroup.add(roof);
+        }
+      }
+
+      // Add Authentic Floating City Banner Plaque
+      const cityBanner = this.createCityBanner(city, owner);
+      cityBanner.position.set(0, elevation + 15, 0);
+      cityGroup.add(cityBanner);
+
       cityGroup.position.set(pos.x, 0, pos.z);
+      cityGroup.userData = { city: city };
       this.scene.add(cityGroup);
       this.cityMeshes.set(city.id, cityGroup);
     }
@@ -717,6 +974,7 @@ class Civ6Engine {
       const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.8, 1.2, 16), baseMat);
       pedestal.position.y = elevation + 0.6;
       pedestal.castShadow = true;
+      pedestal.receiveShadow = true;
       unitGroup.add(pedestal);
 
       // Golden Rim Ring
@@ -725,43 +983,69 @@ class Civ6Engine {
       rim.rotation.x = Math.PI / 2;
       unitGroup.add(rim);
 
-      // Miniature Figure Body
-      let figurine;
-      if (unit.type === "UNIT_SETTLER") {
-        // Covered Wagon model
-        figurine = new THREE.Group();
-        const cart = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 4), this.materials["WOOD"]);
-        cart.position.y = elevation + 2.2;
-        figurine.add(cart);
-        const canopy = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 4, 8, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ color: 0xeeeeee }));
-        canopy.rotation.z = Math.PI / 2;
-        canopy.rotation.y = Math.PI / 2;
-        canopy.position.y = elevation + 3.2;
-        figurine.add(canopy);
-      } else {
-        // Warrior figurine with shield and sword
-        figurine = new THREE.Group();
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.5, 3.5, 8), this.materials["STONE"]);
-        body.position.y = elevation + 2.8;
-        body.castShadow = true;
-        figurine.add(body);
-
-        const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), this.materials["GOLD"]);
-        head.position.y = elevation + 5.0;
-        head.castShadow = true;
-        figurine.add(head);
-
-        const shield = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.2, 1.6), baseMat);
-        shield.position.set(-1.6, elevation + 3.2, 0);
-        figurine.add(shield);
-
-        const sword = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.5, 0.4), this.materials["GOLD"]);
-        sword.position.set(1.5, elevation + 3.8, 0.5);
-        sword.rotation.z = -0.3;
-        figurine.add(sword);
+      // 3D glTF Model or Procedural Miniature Figurine
+      let rendered3DModel = false;
+      if (this.loadedModels && this.loadedModels[unit.type]) {
+        try {
+          const modelClone = this.loadedModels[unit.type].clone(true);
+          modelClone.scale.set(0.6, 0.6, 0.6);
+          modelClone.position.set(0, elevation + 1.2, 0);
+          modelClone.rotation.y = Math.PI / 4;
+          modelClone.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+          unitGroup.add(modelClone);
+          rendered3DModel = true;
+        } catch (e) {
+          console.warn("[Civ6 Engine] glTF clone fallback:", e);
+        }
       }
 
-      unitGroup.add(figurine);
+      if (!rendered3DModel) {
+        // High-fidelity procedural figurine fallback
+        let figurine;
+        if (unit.type === "UNIT_SETTLER") {
+          figurine = new THREE.Group();
+          const cart = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 4), this.materials["WOOD"]);
+          cart.position.y = elevation + 2.2;
+          figurine.add(cart);
+          const canopy = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 4, 8, 1, false, 0, Math.PI), new THREE.MeshStandardMaterial({ color: 0xeeeeee }));
+          canopy.rotation.z = Math.PI / 2;
+          canopy.rotation.y = Math.PI / 2;
+          canopy.position.y = elevation + 3.2;
+          figurine.add(canopy);
+        } else {
+          figurine = new THREE.Group();
+          const body = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.5, 3.5, 8), this.materials["STONE"]);
+          body.position.y = elevation + 2.8;
+          body.castShadow = true;
+          figurine.add(body);
+
+          const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), this.materials["GOLD"]);
+          head.position.y = elevation + 5.0;
+          head.castShadow = true;
+          figurine.add(head);
+
+          const shield = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.2, 1.6), baseMat);
+          shield.position.set(-1.6, elevation + 3.2, 0);
+          figurine.add(shield);
+
+          const sword = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.5, 0.4), this.materials["GOLD"]);
+          sword.position.set(1.5, elevation + 3.8, 0.5);
+          sword.rotation.z = -0.3;
+          figurine.add(sword);
+        }
+        unitGroup.add(figurine);
+      }
+
+      // Add Authentic Floating Unit Banner Sprite
+      const bannerSprite = this.createUnitBanner(unit, owner);
+      bannerSprite.position.set(0, elevation + 10.5, 0);
+      unitGroup.add(bannerSprite);
+
       unitGroup.position.set(pos.x, 0, pos.z);
       unitGroup.userData = { unit: unit, baseElevation: elevation };
 

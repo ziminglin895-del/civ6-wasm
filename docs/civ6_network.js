@@ -165,6 +165,28 @@ class Civ6NetworkManager {
         </span>
       `).join("");
     }
+
+    // Update circular Next Turn action status
+    const endTurnBtn = document.getElementById("btn-end-turn");
+    if (endTurnBtn && state) {
+      const unmoved = state.units.some(u => u.owner === this.engine.myPlayerId && u.moves > 0);
+      const emptyCity = state.cities.some(c => c.owner === this.engine.myPlayerId && !c.currentProduction);
+      const titleEl = endTurnBtn.querySelector(".end-turn-title");
+      const subEl = endTurnBtn.querySelector(".end-turn-sub");
+      if (unmoved) {
+        endTurnBtn.classList.add("needs-action");
+        if (titleEl) titleEl.innerText = "⚡ 指令待命";
+        if (subEl) subEl.innerText = "ORDERS";
+      } else if (emptyCity) {
+        endTurnBtn.classList.add("needs-action");
+        if (titleEl) titleEl.innerText = "⚙️ 选择生产";
+        if (subEl) subEl.innerText = "PRODUCTION";
+      } else {
+        endTurnBtn.classList.remove("needs-action");
+        if (titleEl) titleEl.innerText = "⚡ 下一回合";
+        if (subEl) subEl.innerText = "NEXT TURN";
+      }
+    }
   }
 
   sendMoveUnit(unitId, q, r) {
@@ -247,10 +269,106 @@ class Civ6NetworkManager {
   }
 
   initUI() {
-    // 1. End Turn Button
+    // 0. Authentic Start Game & Leader Selection Screen
+    const splash = document.getElementById("splash-screen");
+    const startBtn = document.getElementById("btn-start-game");
+    const pickerCards = document.querySelectorAll(".picker-card");
+    let chosenLeader = "QIN";
+
+    pickerCards.forEach(card => {
+      card.addEventListener("click", () => {
+        pickerCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        chosenLeader = card.getAttribute("data-leader");
+        const quoteEl = document.getElementById("splash-quote-text");
+        if (quoteEl) {
+          if (chosenLeader === "QIN") {
+            quoteEl.innerText = '"朕统六国，天下归一，筑长城以镇九州！ ——秦始皇"';
+          } else if (chosenLeader === "TRAJAN") {
+            quoteEl.innerText = '"罗马的鹰旗所到之处，皆为帝国之疆界。条条大路通罗马！ ——图拉真"';
+          } else if (chosenLeader === "CLEOPATRA") {
+            quoteEl.innerText = '"尼罗河的水波倒映着法老的永恒，我们将用智慧与财富征服世界！ ——克利奥帕特拉"';
+          } else if (chosenLeader === "GANDHI") {
+            quoteEl.innerText = '"没有通往和平的路，和平本身就是路。 ——莫罕达斯·甘地"';
+          }
+        }
+      });
+    });
+
+    if (startBtn && splash) {
+      startBtn.addEventListener("click", () => {
+        splash.style.opacity = "0";
+        setTimeout(() => splash.style.display = "none", 450);
+
+        // Update player badge
+        const badgeImg = document.getElementById("leader-portrait");
+        const badgeName = document.getElementById("leader-name-text");
+        if (badgeImg && badgeName) {
+          if (chosenLeader === "QIN") {
+            badgeImg.src = "./assets/arx/Civ_LEADER_QIN.png";
+            badgeName.innerText = "秦始皇 (中国)";
+          } else if (chosenLeader === "TRAJAN") {
+            badgeImg.src = "./assets/arx/Civ_LEADER_TRAJAN.png";
+            badgeName.innerText = "图拉真 (罗马)";
+          } else if (chosenLeader === "CLEOPATRA") {
+            badgeImg.src = "./assets/arx/Civ_LEADER_CLEOPATRA.png";
+            badgeName.innerText = "克利奥帕特拉 (埃及)";
+          } else if (chosenLeader === "GANDHI") {
+            badgeImg.src = "./assets/arx/Civ_LEADER_GANDHI.png";
+            badgeName.innerText = "甘地 (印度)";
+          }
+        }
+
+        // Auto play audio
+        const audioEl = document.getElementById("civ6-audio");
+        const musicBtn = document.getElementById("btn-toggle-music");
+        if (audioEl) {
+          audioEl.play().then(() => {
+            if (musicBtn) musicBtn.innerHTML = `<span>🔊</span> 原版交响乐 (播放中)`;
+          }).catch(() => {});
+        }
+
+        this.appendChat("system", `🏛️ 征程开启！伟大领袖降临，世界历史的篇章从此刻书写！`);
+      });
+    }
+
+    // 1. End Turn Button & Smart Action Cycle
     const endTurnBtn = document.getElementById("btn-end-turn");
     if (endTurnBtn) {
-      endTurnBtn.addEventListener("click", () => this.sendEndTurn());
+      endTurnBtn.addEventListener("click", () => {
+        // Check if there are units that need orders
+        if (this.engine.gameState) {
+          const unmovedUnit = this.engine.gameState.units.find(u => u.owner === this.engine.myPlayerId && u.moves > 0);
+          if (unmovedUnit) {
+            // Select and pan to unmoved unit
+            this.engine.selectedUnit = unmovedUnit;
+            this.engine.updateUnitCard(unmovedUnit);
+            const pos = this.engine.hexToWorld3D(unmovedUnit.q, unmovedUnit.r, 0);
+            if (this.engine.controls) {
+              this.engine.controls.target.set(pos.x, 0, pos.z);
+            }
+            this.appendChat("system", `⚡ 请为单位【${unmovedUnit.name}】下达行动指令 (移动或驻留)。`);
+            return;
+          }
+
+          // Check if city needs production
+          const emptyCity = this.engine.gameState.cities.find(c => c.owner === this.engine.myPlayerId && !c.currentProduction);
+          if (emptyCity) {
+            this.engine.selectedCity = emptyCity;
+            const cityModal = document.getElementById("city-modal");
+            const cityTitle = document.getElementById("city-modal-title");
+            if (cityModal && cityTitle) {
+              cityTitle.innerText = `${emptyCity.name} · 请选择生产项目`;
+              cityModal.style.display = "flex";
+            }
+            this.appendChat("system", `⚙️ 城市【${emptyCity.name}】生产队列为空，请规划建筑或单位！`);
+            return;
+          }
+        }
+
+        // Advance turn
+        this.sendEndTurn();
+      });
     }
 
     // 2. Found City Button
